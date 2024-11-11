@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "setup-dbs": "psql -f ./db/setup.sql",
     "test": "jest",
     "prepare": "husky"
   },
