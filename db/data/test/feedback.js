@@ -35,5 +35,3 @@ module.exports = [
     date_left: "2023-06-30",
   },
 ];
-
-module.exports = feedback;
