@@ -1,0 +1,17 @@
+{
+  "name": "e-commerce-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "husky": "^9.1.6",
+    "jest": "^29.7.0"
+  }
+}
