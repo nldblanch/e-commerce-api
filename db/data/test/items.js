@@ -1,7 +1,6 @@
 module.exports = [
   {
-    id: 1,
-    user_id: 1,
+    username: "tech_guru92",
     name: "Smartphone",
     description: "Latest model smartphone with advanced features",
     price: 500.0,
@@ -9,8 +8,7 @@ module.exports = [
     available_item: "TRUE",
   },
   {
-    id: 2,
-    user_id: 1,
+    username: "tech_guru92",
     name: "Laptop",
     description: "High-performance gaming laptop with RGB lighting",
     price: 1200.0,
@@ -18,8 +16,7 @@ module.exports = [
     available_item: "FALSE",
   },
   {
-    id: 3,
-    user_id: 2,
+    username: "vintage_collect",
     name: "Vintage Camera",
     description: "Old-school film camera from the 80s",
     price: 250.0,
@@ -27,8 +24,7 @@ module.exports = [
     available_item: "TRUE",
   },
   {
-    id: 4,
-    user_id: 3,
+    username: "gadget_fanatic",
     name: "Gaming Mouse",
     description: "RGB wired gaming mouse with precision sensor",
     price: 50.0,
@@ -36,8 +32,7 @@ module.exports = [
     available_item: "FALSE",
   },
   {
-    id: 5,
-    user_id: 4,
+    username: "bookworm_88",
     name: "Novel A",
     description: "Best-selling fiction novel with thrilling plot",
     price: 15.0,
@@ -45,8 +40,8 @@ module.exports = [
     available_item: "TRUE",
   },
   {
-    id: 6,
-    user_id: 5,
+    username: "furniture_world",
+
     name: "Sofa",
     description: "Comfortable 3-seater sofa in neutral color",
     price: 800.0,
@@ -54,8 +49,7 @@ module.exports = [
     available_item: "FALSE",
   },
   {
-    id: 7,
-    user_id: 6,
+    username: "kitchen_queen",
     name: "Blender",
     description: "High-speed blender for smoothies and shakes",
     price: 75.0,
@@ -63,8 +57,8 @@ module.exports = [
     available_item: "TRUE",
   },
   {
-    id: 8,
-    user_id: 7,
+    username: "clothing_fanatic",
+
     name: "T-shirt",
     description: "Cotton graphic T-shirt with unique design",
     price: 20.0,
@@ -72,8 +66,7 @@ module.exports = [
     available_item: "TRUE",
   },
   {
-    id: 9,
-    user_id: 8,
+    username: "car_parts_shop",
     name: "Brake Pads",
     description: "Front brake pads for cars, set of 2",
     price: 40.0,
@@ -81,8 +74,7 @@ module.exports = [
     available_item: "TRUE",
   },
   {
-    id: 10,
-    user_id: 9,
+    username: "artistic_expressions",
     name: "Canvas Painting",
     description: "Abstract art painting by local artist",
     price: 200.0,
