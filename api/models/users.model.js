@@ -1,5 +1,6 @@
 import format from "pg-format";
 import db from "../../db/connection";
+import checkUserExists from "../utils/checkUserExists";
 
 const fetchUserByID = async (id) => {
   const { rows } = await db.query(`SELECT * FROM users WHERE id = ${id};`);
@@ -7,21 +8,6 @@ const fetchUserByID = async (id) => {
   return data
     ? data
     : Promise.reject({ code: 404, message: "user id not found" });
-};
-
-const checkUserExists = async (username) => {
-  const { rows } = await db.query(
-    `SELECT username FROM users where username = '${username}'`
-  );
-  const [data] = rows;
-  if (data) {
-    return Promise.reject({
-      code: 409,
-      message: "conflict - username already taken",
-    });
-  } else {
-    return Promise.resolve();
-  }
 };
 
 const insertUser = async ({ username, name }) => {

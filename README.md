@@ -24,7 +24,7 @@ A users data is in the format:
 
 ### /users
 
-#### Post 
+#### Post - DONE
 - The user id is a serial primary key.
 - There is a default avatar_url for users.
 - The registration date will default to `TIMESTAMP DEFAULT NOW()`.
