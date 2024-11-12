@@ -9,7 +9,24 @@ const fetchUserByID = async (id) => {
     : Promise.reject({ code: 404, message: "user id not found" });
 };
 
+const checkUserExists = async (username) => {
+  const { rows } = await db.query(
+    `SELECT username FROM users where username = '${username}'`
+  );
+  const [data] = rows;
+  if (data) {
+    return Promise.reject({
+      code: 409,
+      message: "conflict - username already taken",
+    });
+  } else {
+    return Promise.resolve();
+  }
+};
+
 const insertUser = async ({ username, name }) => {
+  await checkUserExists(username);
+
   const insertUserString = format(
     `
       INSERT INTO users (username, name) 

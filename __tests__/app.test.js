@@ -97,5 +97,12 @@ describe("/api/users", () => {
       } = await request(app).post("/api/users").send(userData).expect(400);
       expect(message).toBe("bad request - invalid key or value")
     })
+    test("409: responds with conflict when username already taken", async () => {
+      const userData = { username: "tech_guru92", name: "Nathan Blanch" };
+      const {
+        body: { message },
+      } = await request(app).post("/api/users").send(userData).expect(409);
+      expect(message).toBe("conflict - username already taken");
+    });
   });
 });

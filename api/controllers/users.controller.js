@@ -14,11 +14,10 @@ const getUserByID = async (request, response, next) => {
 const postUser = async (request, response, next) => {
   const { body } = request;
   try {
-    await greenlist(["username", "name"], Object.keys(body))
+    await greenlist(["username", "name"], Object.keys(body));
     const user = await insertUser(body);
     response.status(201).send({ user });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
