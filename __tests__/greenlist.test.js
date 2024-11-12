@@ -37,4 +37,16 @@ describe("greenlist", () => {
     //assert
     expect(actual).rejects.toEqual({ code: 400, message: "bad request - invalid key or value" })
   });
+  test("function does not mutate arrays", async () => {
+    //arrange
+    const array = [1, 2, 3, 4, 5];
+    const greenlistArr = [1, 2, 3, 4, 5];
+    const arrayCopy = [1, 2, 3, 4, 5];
+    const greenlistArrCopy = [1, 2, 3, 4, 5];
+    //act
+    await greenlist(greenlistArr, array)
+    //assert
+    expect(array).toEqual(arrayCopy)
+    expect(greenlistArr).toEqual(greenlistArrCopy)
+  });
 });
