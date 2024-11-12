@@ -1,3 +1,16 @@
 {
-    "name": "Nathan"
+  "/api": {
+    "GET": {
+      "description": "serves up a json representation of all the available endpoints of the api",
+      "queries": [],
+      "exampleResponse": {
+        "id": 1,
+        "username": "tech_guru92",
+        "name": "John Doe",
+        "avatar_url": "https://www.gravatar.com/avatar/3b3be63a4c2a439b013787725dfce802?d=identicon",
+        "data_registered": "2022-05-14T00:00:00.000Z",
+        "balance": "120.5"
+      }
+    }
+  }
 }

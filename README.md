@@ -6,9 +6,9 @@ Hello! Welcome to the beginning of this api. Here is a great space for us to lea
 
 ## Planned endpoints
 
-### /user
+### /users/:user_id
 
-#### Get
+#### Get - DONE
 
 A users data is in the format:
 ```
@@ -22,7 +22,9 @@ A users data is in the format:
 }
 ```
 
-#### Post
+### /users
+
+#### Post 
 - The user id is a serial primary key.
 - There is a default avatar_url for users.
 - The registration date will default to `TIMESTAMP DEFAULT NOW()`.
