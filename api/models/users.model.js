@@ -1,3 +1,4 @@
+import format from "pg-format";
 import db from "../../db/connection";
 
 const fetchUserByID = async (id) => {
@@ -8,4 +9,17 @@ const fetchUserByID = async (id) => {
     : Promise.reject({ code: 404, message: "user id not found" });
 };
 
-export default fetchUserByID;
+const insertUser = async ({ username, name }) => {
+  const insertUserString = format(
+    `
+      INSERT INTO users (username, name) 
+      VALUES %L RETURNING *
+      ;`,
+    [[username, name]]
+  );
+  const { rows } = await db.query(insertUserString);
+  const [data] = rows;
+  return data;
+};
+
+export { fetchUserByID, insertUser };

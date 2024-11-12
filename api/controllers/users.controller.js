@@ -1,4 +1,5 @@
-import fetchUserByID from "../models/users.model";
+import { fetchUserByID, insertUser } from "../models/users.model";
+import greenlist from "../utils/greenlist";
 
 const getUserByID = async (request, response, next) => {
   const { user_id } = request.params;
@@ -10,4 +11,16 @@ const getUserByID = async (request, response, next) => {
   }
 };
 
-export default getUserByID;
+const postUser = async (request, response, next) => {
+  const { body } = request;
+  try {
+    await greenlist(["username", "name"], Object.keys(body))
+    const user = await insertUser(body);
+    response.status(201).send({ user });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export { getUserByID, postUser };

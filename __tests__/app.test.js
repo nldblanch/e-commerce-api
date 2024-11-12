@@ -14,7 +14,7 @@ afterAll(() => {
   return db.end();
 });
 describe("/api", () => {
-  test("200 GET: Api router returns endpoints", async () => {
+  test("200 GET: returns endpoints", async () => {
     const {
       body: { endpoints },
     } = await request(app).get("/api").expect(200);
@@ -61,5 +61,41 @@ describe("/api/users/:user_id", () => {
       const errorMessage = data.body.message;
       expect(errorMessage).toBe("user id not found");
     });
+  });
+});
+
+describe("/api/users", () => {
+  describe("POST", () => {
+    test("201: adds user to database and returns user", async () => {
+      const userData = { username: "nldblanch", name: "Nathan Blanch" };
+      const {
+        body: { user },
+      } = await request(app).post("/api/users").send(userData).expect(201);
+      expect(user).toMatchObject({
+        id: expect.any(Number),
+        username: userData.username,
+        name: userData.name,
+        avatar_url: expect.any(String),
+        date_registered: expect.any(String),
+        balance: "0",
+      })
+      const today = new Date()
+      const dateRegistered = new Date(user.date_registered)
+      expect(today.getUTCDate()).toBe(dateRegistered.getUTCDate())
+    });
+    test("400: request body missing keys", async () => {
+      const userData = { name: "Nathan Blanch" };
+      const {
+        body: { message },
+      } = await request(app).post("/api/users").send(userData).expect(400);
+      expect(message).toBe("bad request - missing key")
+    })
+    test("400: request body has invalid keys", async () => {
+      const userData = { person: "nldblanch", name: "Nathan Blanch" };
+      const {
+        body: { message },
+      } = await request(app).post("/api/users").send(userData).expect(400);
+      expect(message).toBe("bad request - invalid key or value")
+    })
   });
 });
