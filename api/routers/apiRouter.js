@@ -1,10 +1,10 @@
-const { getEndpoints } = require("../controllers/api.controller");
-const usersRouter = require("./usersRouter");
-
-const apiRouter = require("express").Router();
+import express from "express";
+import getEndpoints from "../controllers/api.controller";
+import usersRouter from "./usersRouter";
+const apiRouter = express.Router();
 
 apiRouter.get("/", getEndpoints);
 
 apiRouter.use("/users", usersRouter);
 
-module.exports = apiRouter;
+export default apiRouter;

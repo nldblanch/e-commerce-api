@@ -1,7 +1,7 @@
-const format = require("pg-format");
-const db = require("../connection");
-const { users, items, feedback } = require("../data/test");
-const { convertDateToTimestamp, createRef } = require("./seed-utils");
+import format from "pg-format";
+import db from "../connection";
+import { users, items, feedback } from "../data/test";
+import { createRef, convertDateToTimestamp } from "./seed-utils";
 const seed = async () => {
   try {
     await db.query("DROP TABLE IF EXISTS feedback");
@@ -126,10 +126,9 @@ const seed = async () => {
     );
 
     await db.query(insertIntoFeedbackQuery);
-    
   } catch (error) {
     console.log(error);
   }
 };
 
-module.exports = seed;
+export default seed;

@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     seller: "tech_guru92",
     buyer: "vintage_collect",

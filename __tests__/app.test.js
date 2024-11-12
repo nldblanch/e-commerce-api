@@ -1,10 +1,12 @@
-const { data } = require("../db/data/test");
-const request = require("supertest");
-const db = require("../db/connection");
-const seed = require("../db/seeds/seed");
-const app = require("../api/app");
+import { users, items, feedback } from "../db/data/test";
+import request from "supertest";
+import db from "../db/connection";
+import seed from "../db/seeds/seed";
+import app from "../api/app";
+import endpointsJSON from "../endpoints.json";
 
 beforeEach(() => {
+  const data = { users, items, feedback };
   return seed(data);
 });
 
@@ -13,8 +15,6 @@ afterAll(() => {
 });
 describe("/api", () => {
   test("200 GET: Api router returns endpoints", async () => {
-    const endpointsJSON = require("../endpoints.json");
-    
     const {
       body: { endpoints },
     } = await request(app).get("/api").expect(200);
@@ -56,10 +56,10 @@ describe("/api/users/:user_id", () => {
       expect(errorMessage).toBe("bad request - column does not exist");
     });
     test("404: responds with not found when user doesn't exist", async () => {
-      const data = await request(app).get("/api/users/9000").expect(404)
+      const data = await request(app).get("/api/users/9000").expect(404);
 
-      const errorMessage = data.body.message
-      expect(errorMessage).toBe("user id not found")
+      const errorMessage = data.body.message;
+      expect(errorMessage).toBe("user id not found");
     });
   });
 });

@@ -1,7 +1,5 @@
-const users = require("./users");
-const items = require("./items");
-const feedback = require("./feedback");
+import users from "./users";
+import items from "./items";
+import feedback from "./feedback";
 
-const data = { users, items, feedback };
-
-module.exports = data;
+export { users, items, feedback };

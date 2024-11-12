@@ -1,6 +1,6 @@
-const express = require("express");
-const apiRouter = require("./routers/apiRouter");
-const { invalidEndpoint } = require("./error-handling/invalidEndpoint");
+import express from "express";
+import apiRouter from "./routers/apiRouter";
+import invalidEndpoint from "./error-handling/invalidEndpoint";
 const app = express();
 app.use(express.json());
 
@@ -8,17 +8,19 @@ app.use("/api", apiRouter);
 app.all("*", invalidEndpoint);
 app.use((error, request, response, next) => {
   if (error.code === "42703") {
-    response.status(400).send({message: "bad request - column does not exist"})
+    response
+      .status(400)
+      .send({ message: "bad request - column does not exist" });
   } else {
-    next(error)
+    next(error);
   }
-})
+});
 
 app.use((error, request, response, next) => {
   if (error.code && error.message) {
-    response.status(error.code).send({message: error.message})
+    response.status(error.code).send({ message: error.message });
   } else {
-    next(error)
+    next(error);
   }
-})
-module.exports = app;
+});
+export default app;

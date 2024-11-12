@@ -1,6 +1,6 @@
-const { fetchUserByID } = require("../models/users.model");
+import fetchUserByID from "../models/users.model";
 
-exports.getUserByID = async (request, response, next) => {
+const getUserByID = async (request, response, next) => {
   const { user_id } = request.params;
   try {
     const user = await fetchUserByID(user_id);
@@ -9,3 +9,5 @@ exports.getUserByID = async (request, response, next) => {
     next(error);
   }
 };
+
+export default getUserByID;
