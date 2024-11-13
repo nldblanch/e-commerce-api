@@ -25,4 +25,20 @@ const insertUser = async ({ username, name }) => {
   return data;
 };
 
-export { fetchUserByID, insertUser };
+const updateUser = async (id, entries) => {
+  if (entries.length < 1) return Promise.reject({code: 400, message: "bad request - no patch data"})
+
+  let queryString = `UPDATE users SET `;
+  const values = entries.map(([key, value], i, arr) => {
+    queryString += `${key} = $${i + 1}`;
+    queryString += i + 1 === arr.length ? " " : ", "
+    return value;
+  });
+
+  queryString += `WHERE id = $${values.length + 1} RETURNING * `;
+  const { rows } = await db.query(queryString, [...values, id]);
+  const [data] = rows;
+  return data;
+};
+
+export { fetchUserByID, insertUser, updateUser };

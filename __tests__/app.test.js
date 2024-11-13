@@ -62,6 +62,80 @@ describe("/api/users/:user_id", () => {
       expect(errorMessage).toBe("user id not found");
     });
   });
+  describe("PATCH", () => {
+    test("200: can update username", async () => {
+      const patchData = { username: "tech_guru99" };
+      const {
+        body: { user },
+      } = await request(app).patch("/api/users/1").send(patchData).expect(200);
+      expect(user).toMatchObject({
+        username: "tech_guru99",
+        id: 1,
+      });
+    });
+    test("200: can update name", async () => {
+      const patchData = { name: "Nathan" };
+      const {
+        body: { user },
+      } = await request(app).patch("/api/users/1").send(patchData).expect(200);
+      expect(user).toMatchObject({
+        name: "Nathan",
+        id: 1,
+      });
+    });
+    test("200: can update avatar", async () => {
+      const patchData = { avatar_url: "https://www.example.com" };
+      const {
+        body: { user },
+      } = await request(app).patch("/api/users/1").send(patchData).expect(200);
+      expect(user).toMatchObject({
+        avatar_url: "https://www.example.com",
+        id: 1,
+      });
+    });
+    test("200: can update balance", async () => {
+      const patchData = { balance: "200.57" };
+      const {
+        body: { user },
+      } = await request(app).patch("/api/users/1").send(patchData).expect(200);
+      expect(user).toMatchObject({
+        balance: "200.57",
+        id: 1,
+      });
+    });
+    test("200: can update multiple values at once", async () => {
+      const patchData = {
+        username: "tech_guru99",
+        name: "Nathan",
+        avatar_url: "https://www.example.com",
+        balance: "2000",
+      };
+      const {
+        body: { user },
+      } = await request(app).patch("/api/users/1").send(patchData).expect(200);
+      expect(user).toMatchObject({
+        id: 1,
+        username: "tech_guru99",
+        name: "Nathan",
+        avatar_url: "https://www.example.com",
+        balance: "2000",
+      });
+    });
+    test("400: patch info missing keys", async () => {
+      const patchData = {};
+      const {
+        body: { message },
+      } = await request(app).patch("/api/users/1").send(patchData).expect(400);
+      expect(message).toBe("bad request - no patch data")
+    })
+    test("400: patch info has invalid keys", async () => {
+      const patchData = {nam: "Nathan"};
+      const {
+        body: { message },
+      } = await request(app).patch("/api/users/1").send(patchData).expect(400);
+      expect(message).toBe("bad request - invalid key or value")
+    })
+  });
 });
 
 describe("/api/users", () => {

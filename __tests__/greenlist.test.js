@@ -1,4 +1,4 @@
-import greenlist from "../api/utils/greenlist";
+import greenlist from "../api/utils/strictGreenlist";
 
 describe("greenlist", () => {
   test("returns a promise", async () => {
@@ -15,27 +15,21 @@ describe("greenlist", () => {
     const array = [1, 2, 3, 4, 5];
     const greenlistArr = [1, 2, 3, 4, 5];
     //act
-    const actual = greenlist(greenlistArr, array)
+    const actual = greenlist(greenlistArr, array);
     //assert
-    expect(actual).resolves.toBe("successful greenlist")
+    expect(actual).resolves.toBe("successful greenlist");
   });
-  test("promise rejects when array lengths do not match", async () => {
-    //arrange
-    const array = [1, 2, 3];
-    const greenlistArr = [1, 2, 3, 4, 5];
-    //act
-    const actual = greenlist(greenlistArr, array)
-    //assert
-    expect(actual).rejects.toEqual({ code: 400, message: "bad request - missing key" })
-  });
-  test("promise rejects when array does not match greenlist", async () => {
+  test("promise rejects when any elements of the array does not match greenlist", async () => {
     //arrange
     const array = [1, 2, 3, 4, 6];
     const greenlistArr = [1, 2, 3, 4, 5];
     //act
-    const actual = greenlist(greenlistArr, array)
+    const actual = greenlist(greenlistArr, array);
     //assert
-    expect(actual).rejects.toEqual({ code: 400, message: "bad request - invalid key or value" })
+    expect(actual).rejects.toEqual({
+      code: 400,
+      message: "bad request - invalid key or value",
+    });
   });
   test("function does not mutate arrays", async () => {
     //arrange
@@ -44,9 +38,9 @@ describe("greenlist", () => {
     const arrayCopy = [1, 2, 3, 4, 5];
     const greenlistArrCopy = [1, 2, 3, 4, 5];
     //act
-    await greenlist(greenlistArr, array)
+    await greenlist(greenlistArr, array);
     //assert
-    expect(array).toEqual(arrayCopy)
-    expect(greenlistArr).toEqual(greenlistArrCopy)
+    expect(array).toEqual(arrayCopy);
+    expect(greenlistArr).toEqual(greenlistArrCopy);
   });
 });

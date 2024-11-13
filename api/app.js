@@ -15,7 +15,13 @@ app.use((error, request, response, next) => {
     next(error);
   }
 });
-
+app.use((error, request, response, next) => {
+  if (error.flag === "patch") {
+    response.status(error.code).send({ message: error.message });
+  } else {
+    next(error);
+  }
+});
 app.use((error, request, response, next) => {
   if (error.code === "23502") {
     response
@@ -32,12 +38,5 @@ app.use((error, request, response, next) => {
     next(error);
   }
 });
-app.use((error, request, response, next) => {
-  if (error.message = "greenlist") {
-    response.status(400).send({message: "bad request - invalid key or value"})
-  } else {
-    next(error)
-  }
-})
 
 export default app;
