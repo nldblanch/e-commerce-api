@@ -22,9 +22,13 @@ A users data is in the format:
 }
 ```
 
+#### Patch
+
+Patchable keys: username, name, avatar, balance
+
 ### /users
 
-#### Post - DONE
+#### Post - DONE, no endpoint
 - The user id is a serial primary key.
 - There is a default avatar_url for users.
 - The registration date will default to `TIMESTAMP DEFAULT NOW()`.
@@ -36,7 +40,7 @@ Therefore the user data for a post must be in the format:
     name: "Nathan Blanch"
 }
 ```
-#### Patch
+
 #### Delete
 
 ### /item
