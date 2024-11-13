@@ -38,7 +38,7 @@ const updateUser = async (id, entries) => {
   queryString += `WHERE id = $${values.length + 1} RETURNING * `;
   const { rows } = await db.query(queryString, [...values, id]);
   const [data] = rows;
-  return data;
+  return data ? data : Promise.reject({code: 404, message: "user id not found"});
 };
 
 export { fetchUserByID, insertUser, updateUser };

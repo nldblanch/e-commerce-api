@@ -135,6 +135,16 @@ describe("/api/users/:user_id", () => {
       } = await request(app).patch("/api/users/1").send(patchData).expect(400);
       expect(message).toBe("bad request - invalid key or value")
     })
+    test("404: user id not found", async () => {
+      const patchData = { name: "Nathan" };
+      const {
+        body: { message },
+      } = await request(app)
+        .patch("/api/users/9000")
+        .send(patchData)
+        .expect(404);
+      expect(message).toBe("user id not found");
+    });
   });
 });
 
