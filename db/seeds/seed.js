@@ -2,46 +2,25 @@ import format from "pg-format";
 import db from "../connection.js";
 import { createRef, convertDateToTimestamp } from "./seed-utils.js";
 
-const dropFeedback = async () => {
-  try {
-
-    const feedback = await db.query("DROP TABLE IF EXISTS feedback;");
-    return feedback
-  } catch (error) {
-    console.log(error)
-  }
-};
-const dropItems = async () => {
-  const items = await db.query("DROP TABLE IF EXISTS items;");
-  return items
-};
-
-const dropUsers = async () => {
-  const users = await db.query("DROP TABLE IF EXISTS users;");
-  return users
-};
-
 const seed = async ({ users, items, feedback }) => {
-  // try {
-    await db.query('DROP SEQUENCE IF EXISTS items_id_seq CASCADE;')
-  await db.query('DROP SEQUENCE IF EXISTS users_id_seq CASCADE;')
-    await dropFeedback();
+  await db.query("DROP SEQUENCE IF EXISTS items_id_seq CASCADE;");
+  await db.query("DROP SEQUENCE IF EXISTS users_id_seq CASCADE;");
+  await db.query("DROP TABLE IF EXISTS feedback;");
 
-    await dropItems();
+  await db.query("DROP TABLE IF EXISTS items;");
+  await db.query("DROP TABLE IF EXISTS users;");
 
-    await dropUsers();
-
-    await db.query(`
+  await db.query(`
                   CREATE TABLE users (
                   id SERIAL PRIMARY KEY
-                  ,username VARCHAR NOT NULL
+                  ,username VARCHAR NOT NULL UNIQUE
                   ,name VARCHAR NOT NULL
                   ,avatar_url VARCHAR DEFAULT 'https://www.gravatar.com/avatar/3b3be63a4c2a439b013787725dfce802?d=identicon'
                   ,date_registered TIMESTAMP DEFAULT NOW()
                   ,balance INTEGER DEFAULT 0
                   );`);
 
-    await db.query(`
+  await db.query(`
                   CREATE TABLE items (
                   id SERIAL PRIMARY KEY
                   ,user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
@@ -52,7 +31,7 @@ const seed = async ({ users, items, feedback }) => {
                   ,available_item BOOLEAN DEFAULT TRUE
                   );`);
 
-    await db.query(`
+  await db.query(`
                   CREATE TABLE feedback (
                   seller_id INT NOT NULL,
                   buyer_id INT NOT NULL,
@@ -64,19 +43,14 @@ const seed = async ({ users, items, feedback }) => {
                   CONSTRAINT different_users CHECK (seller_id != buyer_id)
                   );`);
 
-    const usersQueryData = users.map(
-      ({ username, name, date_registered, balance }) => {
-        return [
-          username,
-          name,
-          convertDateToTimestamp(date_registered),
-          balance,
-        ];
-      }
-    );
+  const usersQueryData = users.map(
+    ({ username, name, date_registered, balance }) => {
+      return [username, name, convertDateToTimestamp(date_registered), balance];
+    }
+  );
 
-    const insertIntoUsersQuery = format(
-      `INSERT INTO users (
+  const insertIntoUsersQuery = format(
+    `INSERT INTO users (
                   username
                   ,name
                   ,date_registered
@@ -85,29 +59,29 @@ const seed = async ({ users, items, feedback }) => {
             VALUES %L 
             RETURNING *
       ;`,
-      usersQueryData
-    );
+    usersQueryData
+  );
 
-    const userData = await db.query(insertIntoUsersQuery);
+  const userData = await db.query(insertIntoUsersQuery);
 
-    const userIdLookup = createRef(userData.rows, "username", "id");
+  const userIdLookup = createRef(userData.rows, "username", "id");
 
-    const itemsQueryData = items.map(
-      ({ username, name, description, price, date_listed, available_item }) => {
-        const user_id = userIdLookup[username];
-        return [
-          user_id,
-          name,
-          description,
-          price,
-          convertDateToTimestamp(date_listed),
-          available_item,
-        ];
-      }
-    );
+  const itemsQueryData = items.map(
+    ({ username, name, description, price, date_listed, available_item }) => {
+      const user_id = userIdLookup[username];
+      return [
+        user_id,
+        name,
+        description,
+        price,
+        convertDateToTimestamp(date_listed),
+        available_item,
+      ];
+    }
+  );
 
-    const insertIntoItemsQuery = format(
-      `INSERT INTO items (
+  const insertIntoItemsQuery = format(
+    `INSERT INTO items (
                 user_id
                 ,name
                 ,description
@@ -117,27 +91,27 @@ const seed = async ({ users, items, feedback }) => {
                 ) 
             VALUES %L
       ;`,
-      itemsQueryData
-    );
+    itemsQueryData
+  );
 
-    await db.query(insertIntoItemsQuery);
+  await db.query(insertIntoItemsQuery);
 
-    const feedbackQueryData = feedback.map(
-      ({ seller, buyer, rating, comment, date_left }, i) => {
-        const seller_id = userIdLookup[seller];
-        const buyer_id = userIdLookup[buyer];
-        return [
-          seller_id,
-          buyer_id,
-          rating,
-          comment,
-          convertDateToTimestamp(date_left),
-        ];
-      }
-    );
+  const feedbackQueryData = feedback.map(
+    ({ seller, buyer, rating, comment, date_left }, i) => {
+      const seller_id = userIdLookup[seller];
+      const buyer_id = userIdLookup[buyer];
+      return [
+        seller_id,
+        buyer_id,
+        rating,
+        comment,
+        convertDateToTimestamp(date_left),
+      ];
+    }
+  );
 
-    const insertIntoFeedbackQuery = format(
-      `INSERT INTO feedback (
+  const insertIntoFeedbackQuery = format(
+    `INSERT INTO feedback (
                 seller_id
                 ,buyer_id
                 ,rating
@@ -146,13 +120,10 @@ const seed = async ({ users, items, feedback }) => {
                 ) 
             VALUES %L
       ;`,
-      feedbackQueryData
-    );
+    feedbackQueryData
+  );
 
-    await db.query(insertIntoFeedbackQuery);
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  await db.query(insertIntoFeedbackQuery);
 };
 
 export default seed;
