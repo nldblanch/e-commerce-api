@@ -28,7 +28,7 @@ describe("/api", () => {
 });
 
 describe("/api/users", () => {
-  describe("/", () => {
+  describe("/users", () => {
     describe("POST", () => {
       test("201: adds user to database and returns user", async () => {
         const userData = { username: "nldblanch", name: "Nathan Blanch" };
@@ -70,7 +70,7 @@ describe("/api/users", () => {
       });
     });
   });
-  describe("/:user_id", () => {
+  describe("/users/:user_id", () => {
     describe("GET", () => {
       test("200: responds with the user associated with the given id", async () => {
         const data1 = await request(app).get("/api/users/1").expect(200);
@@ -214,7 +214,7 @@ describe("/api/users", () => {
     });
   });
 
-  describe("/:user_id/items", () => {
+  describe("/users/:user_id/items", () => {
     describe("POST", () => {
       test("201: adds item to database and returns that item", async () => {
         const itemData = {
@@ -287,7 +287,7 @@ describe("/api/users", () => {
 });
 
 describe("/api/items", () => {
-  describe("/", () => {
+  describe("/items", () => {
     describe("GET", () => {
       test("200: responds with an array of all items", async () => {
         const {
@@ -317,7 +317,7 @@ describe("/api/items", () => {
     });
   });
 
-  describe("/:item_id", () => {
+  describe("/items/:item_id", () => {
     describe("GET", () => {
       test("200: responds with item matching the given id", async () => {
         const {
