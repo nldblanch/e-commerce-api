@@ -190,3 +190,59 @@ describe("/api/users", () => {
     });
   });
 });
+
+describe("/api/items", () => {
+  describe("GET", () => {
+    test("200: responds with an array of all items", async () => {
+      const {body: {items}} = await request(app).get("/api/items").expect(200);
+      expect(items.length).toBeGreaterThan(0)
+      expect(items[0]).toMatchObject({
+        id: 1,
+        user_id: expect.any(Number),
+        name: expect.any(String),
+        description: expect.any(String),
+        price: expect.any(String),
+        date_listed: expect.any(String),
+        available_item: expect.any(Boolean),
+      });
+      expect(Number(items[0].price)).not.toBe(NaN);
+    });
+    test("200: responds with items which are available", async () => {
+      const {body: {items}} = await request(app).get("/api/items").expect(200);
+      items.forEach(item => {
+        expect(item).toMatchObject({
+          available_item: true
+        })
+      })
+    })
+  })
+})
+
+describe("/api/items/:item_id", () => {
+  describe("GET", () => {
+    test("200: responds with item matching the given id", async () => {
+      const {body: {item}} = await request(app).get("/api/items/1").expect(200);
+      expect(item).toMatchObject({
+        id: 1,
+        user_id: expect.any(Number),
+        name: expect.any(String),
+        description: expect.any(String),
+        price: expect.any(String),
+        date_listed: expect.any(String),
+        available_item: expect.any(Boolean),
+      });
+      expect(Number(item.price)).not.toBe(NaN);
+    })
+    test("400: responds with bad request when given non number", async () => {
+      const data = await request(app).get("/api/items/error").expect(400);
+      const errorMessage = data.body.message;
+      expect(errorMessage).toBe("bad request - invalid id");
+    });
+    test("404: responds with not found when item doesn't exist", async () => {
+      const data = await request(app).get("/api/items/9000").expect(404);
+
+      const errorMessage = data.body.message;
+      expect(errorMessage).toBe("item id not found");
+    });
+  })
+})
