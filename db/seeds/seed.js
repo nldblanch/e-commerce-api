@@ -17,7 +17,7 @@ const seed = async () => {
                   ,name VARCHAR NOT NULL
                   ,avatar_url VARCHAR DEFAULT 'https://www.gravatar.com/avatar/3b3be63a4c2a439b013787725dfce802?d=identicon'
                   ,date_registered TIMESTAMP DEFAULT NOW()
-                  ,balance DECIMAL DEFAULT 0
+                  ,balance INTEGER DEFAULT 0
                   );`);
 
     await db.query(`

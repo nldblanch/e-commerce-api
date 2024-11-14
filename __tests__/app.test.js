@@ -37,7 +37,7 @@ describe("/api/users", () => {
           name: userData.name,
           avatar_url: expect.any(String),
           date_registered: expect.any(String),
-          balance: "0",
+          balance: 0,
         });
         const today = new Date();
         const dateRegistered = new Date(user.date_registered);
@@ -77,9 +77,8 @@ describe("/api/users", () => {
           name: expect.any(String),
           avatar_url: expect.any(String),
           date_registered: expect.any(String),
-          balance: expect.any(String),
+          balance: expect.any(Number),
         });
-        expect(Number(user1.balance)).not.toBe(NaN);
 
         const data2 = await request(app).get("/api/users/2").expect(200);
         const user2 = data2.body.user;
@@ -89,9 +88,8 @@ describe("/api/users", () => {
           name: expect.any(String),
           avatar_url: expect.any(String),
           date_registered: expect.any(String),
-          balance: expect.any(String),
+          balance: expect.any(Number),
         });
-        expect(Number(user2.balance)).not.toBe(NaN);
       });
       test("400: responds with bad request when given non number", async () => {
         const data = await request(app).get("/api/users/error").expect(400);
@@ -146,7 +144,7 @@ describe("/api/users", () => {
         });
       });
       test("200: can update balance", async () => {
-        const patchData = { balance: "200.57" };
+        const patchData = { balance: 20057 };
         const {
           body: { user },
         } = await request(app)
@@ -154,7 +152,7 @@ describe("/api/users", () => {
           .send(patchData)
           .expect(200);
         expect(user).toMatchObject({
-          balance: "200.57",
+          balance: 20057,
           id: 1,
         });
       });
@@ -163,7 +161,7 @@ describe("/api/users", () => {
           username: "tech_guru99",
           name: "Nathan",
           avatar_url: "https://www.example.com",
-          balance: "2000",
+          balance: 200000,
         };
         const {
           body: { user },
@@ -176,7 +174,7 @@ describe("/api/users", () => {
           username: "tech_guru99",
           name: "Nathan",
           avatar_url: "https://www.example.com",
-          balance: "2000",
+          balance: 200000,
         });
       });
       test("400: patch info missing keys", async () => {
