@@ -32,4 +32,33 @@ const insertItem = async (id, {name, description, price}) => {
       return data;
 }
 
-export { fetchAllItems, fetchItem, insertItem };
+const updateItem = async (user_id, item_id, entries) => {
+  const item = await fetchItem(item_id);
+  if (item.user_id !== Number(user_id)) {
+    return Promise.reject({
+      code: 403,
+      message: "user id does not match user id associated with item",
+    });
+  }
+  if (entries.length < 1)
+    return Promise.reject({
+      code: 400,
+      message: "bad request - no patch data",
+    });
+
+  let queryString = `UPDATE items SET `;
+  const values = entries.map(([key, value], i, arr) => {
+    queryString += `${key} = $${i + 1}`;
+    queryString += i + 1 === arr.length ? " " : ", ";
+    return value;
+  });
+
+  queryString += `WHERE id = $${values.length + 1} RETURNING * `;
+  const { rows } = await db.query(queryString, [...values, item_id]);
+  const [data] = rows;
+  return data
+    ? data
+    : Promise.reject({ code: 404, message: "item id not found" });
+};
+
+export { fetchAllItems, fetchItem, insertItem, updateItem };

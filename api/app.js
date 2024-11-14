@@ -5,7 +5,9 @@ const app = express();
 app.use(express.json());
 
 app.use("/api", apiRouter);
+
 app.all("*", invalidEndpoint);
+
 app.use((error, request, response, next) => {
   if (error.code === "42703") {
     response

@@ -29,7 +29,7 @@ describe("/api", () => {
 
 describe("/api/users", () => {
   describe("/users", () => {
-    describe("POST", () => {
+    describe("POST - add a new user", () => {
       test("201: adds user to database and returns user", async () => {
         const userData = { username: "nldblanch", name: "Nathan Blanch" };
         const {
@@ -71,7 +71,7 @@ describe("/api/users", () => {
     });
   });
   describe("/users/:user_id", () => {
-    describe("GET", () => {
+    describe("GET - get a user by their id", () => {
       test("200: responds with the user associated with the given id", async () => {
         const data1 = await request(app).get("/api/users/1").expect(200);
         const user1 = data1.body.user;
@@ -107,7 +107,7 @@ describe("/api/users", () => {
         expect(errorMessage).toBe("user id not found");
       });
     });
-    describe("PATCH", () => {
+    describe("PATCH - update your profile", () => {
       test("200: can update username", async () => {
         const patchData = { username: "tech_guru99" };
         const {
@@ -213,9 +213,8 @@ describe("/api/users", () => {
       });
     });
   });
-
   describe("/users/:user_id/items", () => {
-    describe("POST", () => {
+    describe("POST - add a new item", () => {
       test("201: adds item to database and returns that item", async () => {
         const itemData = {
           name: "Macbook Air 2020",
@@ -258,7 +257,7 @@ describe("/api/users", () => {
         const itemData = {
           item: "Macbook Air 2020",
           description: "Used, but taken well care of",
-          price: 50000
+          price: 50000,
         };
         const {
           body: { message },
@@ -272,7 +271,7 @@ describe("/api/users", () => {
         const itemData = {
           name: "Macbook Air 2020",
           description: "Used, but taken well care of",
-          price: 50000
+          price: 50000,
         };
         const {
           body: { message },
@@ -281,14 +280,226 @@ describe("/api/users", () => {
           .send(itemData)
           .expect(404);
         expect(message).toBe("user id not found");
-      })
+      });
+    });
+  });
+  describe("/users/:user_id/items/:item_id", () => {
+    describe("PATCH - update your item info", () => {
+      test("200: can update item name", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            price: 50000,
+          })
+          .expect(201);
+
+        const patchData = { name: "NEW Macbook" };
+
+        const {
+          body: { item },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(200);
+        expect(item).toMatchObject({ ...macbook, ...patchData });
+      });
+      test("200: can update item description", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            price: 50000,
+          })
+          .expect(201);
+
+        const patchData = {
+          description:
+            "Brand new only just taken out of the box but wrong colour",
+        };
+
+        const {
+          body: { item },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(200);
+        expect(item).toMatchObject({ ...macbook, ...patchData });
+      });
+      test("200: can update item price", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            price: 50000,
+          })
+          .expect(201);
+
+        const patchData = { price: 40000 };
+
+        const {
+          body: { item },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(200);
+        expect(item).toMatchObject({ ...macbook, ...patchData });
+      });
+      test("200: can update any number of values", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            price: 50000,
+          })
+          .expect(201);
+
+        const patchData = {
+          name: "NEW Macbook",
+          description:
+            "Brand new only just taken out of the box but wrong colour",
+          price: 40000,
+        };
+
+        const {
+          body: { item },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(200);
+        expect(item).toMatchObject({ ...macbook, ...patchData });
+      });
+      test("400: patch info missing keys", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            price: 50000,
+          })
+          .expect(201);
+
+        const patchData = {};
+
+        const {
+          body: { message },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(400);
+        expect(message).toBe("bad request - no patch data");
+      });
+      test("400: patch info has invalid keys", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            price: 50000,
+          })
+          .expect(201);
+
+        const patchData = { nam: "NEW Macbook" };
+
+        const {
+          body: { message },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(400);
+        expect(message).toBe("bad request - invalid key or value");
+      });
+      test("404: user id not found", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            price: 50000,
+          })
+          .expect(201);
+
+        const patchData = { name: "NEW Macbook" };
+
+        const {
+          body: { message },
+        } = await request(app)
+          .patch(`/api/users/9000/items/${macbook.id}`)
+          .send(patchData)
+          .expect(404);
+        expect(message).toBe("user id not found");
+      });
+      test("404: item id not found", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            price: 50000,
+          })
+          .expect(201);
+
+        const patchData = { name: "NEW Macbook" };
+
+        const {
+          body: { message },
+        } = await request(app)
+          .patch(`/api/users/1/items/9000`)
+          .send(patchData)
+          .expect(404);
+        expect(message).toBe("item id not found");
+      });
+      test("403: user id does not match item user", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            price: 50000,
+          })
+          .expect(201);
+
+        const patchData = { name: "NEW Macbook" };
+
+        const {
+          body: { message },
+        } = await request(app)
+          .patch(`/api/users/2/items/${macbook.id}`)
+          .send(patchData)
+          .expect(403);
+        expect(message).toBe(
+          "user id does not match user id associated with item"
+        );
+      });
     });
   });
 });
 
 describe("/api/items", () => {
   describe("/items", () => {
-    describe("GET", () => {
+    describe("GET - get all items", () => {
       test("200: responds with an array of all items", async () => {
         const {
           body: { items },
@@ -318,7 +529,7 @@ describe("/api/items", () => {
   });
 
   describe("/items/:item_id", () => {
-    describe("GET", () => {
+    describe("GET - get individual item", () => {
       test("200: responds with item matching the given id", async () => {
         const {
           body: { item },

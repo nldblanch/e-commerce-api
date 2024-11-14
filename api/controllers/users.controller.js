@@ -19,6 +19,9 @@ const postUser = async (request, response, next) => {
     const user = await insertUser(body);
     response.status(201).send({ user });
   } catch (error) {
+    if (error.code === "23505") {
+      error = { code: 409, message: "conflict - username already taken" };
+    }
     next(error);
   }
 };
