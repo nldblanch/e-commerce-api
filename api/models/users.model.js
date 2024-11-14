@@ -1,6 +1,6 @@
 import format from "pg-format";
 import db from "../../db/connection";
-import checkUserExists from "../utils/checkUserExists";
+
 
 const fetchUserByID = async (id) => {
   if (!Number(id))
@@ -13,8 +13,6 @@ const fetchUserByID = async (id) => {
 };
 
 const insertUser = async ({ username, name }) => {
-  await checkUserExists(username);
-
   const insertUserString = format(
     `
       INSERT INTO users (username, name) 
