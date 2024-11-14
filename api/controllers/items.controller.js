@@ -15,7 +15,6 @@ const getItemByID = async (request, response, next) => {
     const item = await fetchItem(item_id);
     response.status(200).send({ item });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
