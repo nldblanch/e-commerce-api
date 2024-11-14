@@ -26,9 +26,9 @@ const seed = async () => {
                   ,user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
                   ,name VARCHAR NOT NULL
                   ,description VARCHAR NOT NULL
-                  ,price DECIMAL NOT NULL
+                  ,price INT NOT NULL
                   ,date_listed TIMESTAMP DEFAULT NOW()
-                  ,available_item BOOLEAN
+                  ,available_item BOOLEAN DEFAULT TRUE
                   );`);
 
     await db.query(`
