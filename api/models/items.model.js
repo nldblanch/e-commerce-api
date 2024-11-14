@@ -19,4 +19,17 @@ const fetchItem = async (id) => {
     : Promise.reject({ code: 404, message: "item id not found" });
 };
 
-export { fetchAllItems, fetchItem };
+const insertItem = async (id, {name, description, price}) => {
+    const insertItemString = format(
+        `
+          INSERT INTO items (user_id, name, description, price) 
+          VALUES %L RETURNING *
+          ;`,
+        [[id, name, description, price]]
+      );
+      const { rows } = await db.query(insertItemString);
+      const [data] = rows;
+      return data;
+}
+
+export { fetchAllItems, fetchItem, insertItem };
