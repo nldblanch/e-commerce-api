@@ -41,16 +41,25 @@ Therefore the user data for a post must be in the format:
 }
 ```
 
+
+# Next features
+
+#### Get all items of a user
+- essentially their store
+
+#### purchase an item
+
+
+#### Queries
+
+Search queries for items
+- categories
+- tags or keywords
+- price
+- most recently listed
+
 #### Delete
 
-### /item
-#### Get
-#### Post
-#### Patch
-#### Delete
-
-### /feedback
-#### Get
-#### Post
-#### Patch
-#### Delete
+- item
+- user
+- feedback

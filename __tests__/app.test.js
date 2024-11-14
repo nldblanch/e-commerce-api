@@ -267,7 +267,7 @@ describe("/api/users", () => {
           .expect(400);
         expect(message).toBe("bad request - invalid key or value");
       });
-      test("404: throwd error when user id does not exist", async () => {
+      test("404: throws error when user id does not exist", async () => {
         const itemData = {
           name: "Macbook Air 2020",
           description: "Used, but taken well care of",
