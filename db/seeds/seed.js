@@ -60,7 +60,8 @@ const seed = async ({ users, items, feedback }) => {
                   comment VARCHAR NOT NULL,
                   date_left TIMESTAMP DEFAULT NOW(),
                   FOREIGN KEY(seller_id) REFERENCES users(id) ON DELETE CASCADE,
-                  FOREIGN KEY(buyer_id) REFERENCES users(id) ON DELETE CASCADE 
+                  FOREIGN KEY(buyer_id) REFERENCES users(id) ON DELETE CASCADE,
+                  CONSTRAINT different_users CHECK (seller_id != buyer_id)
                   );`);
 
     const usersQueryData = users.map(
