@@ -1,4 +1,4 @@
-export default [
+const feedback = [
   {
     seller: "tech_guru92",
     buyer: "vintage_collect",
@@ -35,3 +35,5 @@ export default [
     date_left: "2023-06-30",
   },
 ];
+
+export default feedback

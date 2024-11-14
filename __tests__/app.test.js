@@ -1,17 +1,21 @@
 import { users, items, feedback } from "../db/data/test";
 import request from "supertest";
-import db from "../db/connection";
-import seed from "../db/seeds/seed";
-import app from "../api/app";
+import db from "../db/connection.js";
+import seed from "../db/seeds/seed.js";
+import app from "../api/app.js";
 import endpointsJSON from "../endpoints.json";
-
-beforeEach(() => {
+beforeEach(async () => {
   const data = { users, items, feedback };
-  return seed(data);
+  try {
+    await seed(data);
+  } catch (error) {
+    console.log(error)
+  }
+    
 });
 
-afterAll(() => {
-  return db.end();
+afterAll(async () => {
+  await db.end();
 });
 describe("/api", () => {
   test("200 GET: returns endpoints", async () => {

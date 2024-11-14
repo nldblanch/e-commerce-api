@@ -1,14 +1,35 @@
 import format from "pg-format";
-import db from "../connection";
-import { users, items, feedback } from "../data/test";
-import { createRef, convertDateToTimestamp } from "./seed-utils";
-const seed = async () => {
+import db from "../connection.js";
+import { createRef, convertDateToTimestamp } from "./seed-utils.js";
+
+const dropFeedback = async () => {
   try {
-    await db.query("DROP TABLE IF EXISTS feedback");
 
-    await db.query("DROP TABLE IF EXISTS items");
+    const feedback = await db.query("DROP TABLE IF EXISTS feedback;");
+    return feedback
+  } catch (error) {
+    console.log(error)
+  }
+};
+const dropItems = async () => {
+  const items = await db.query("DROP TABLE IF EXISTS items;");
+  return items
+};
 
-    await db.query("DROP TABLE IF EXISTS users");
+const dropUsers = async () => {
+  const users = await db.query("DROP TABLE IF EXISTS users;");
+  return users
+};
+
+const seed = async ({ users, items, feedback }) => {
+  // try {
+    await db.query('DROP SEQUENCE IF EXISTS items_id_seq CASCADE;')
+  await db.query('DROP SEQUENCE IF EXISTS users_id_seq CASCADE;')
+    await dropFeedback();
+
+    await dropItems();
+
+    await dropUsers();
 
     await db.query(`
                   CREATE TABLE users (
@@ -33,11 +54,13 @@ const seed = async () => {
 
     await db.query(`
                   CREATE TABLE feedback (
-                  seller_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
-                  ,buyer_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
-                  ,rating INT NOT NULL
-                  ,comment VARCHAR NOT NULL
-                  ,date_left TIMESTAMP DEFAULT NOW()
+                  seller_id INT NOT NULL,
+                  buyer_id INT NOT NULL,
+                  rating INT NOT NULL,
+                  comment VARCHAR NOT NULL,
+                  date_left TIMESTAMP DEFAULT NOW(),
+                  FOREIGN KEY(seller_id) REFERENCES users(id) ON DELETE CASCADE,
+                  FOREIGN KEY(buyer_id) REFERENCES users(id) ON DELETE CASCADE 
                   );`);
 
     const usersQueryData = users.map(
@@ -126,9 +149,9 @@ const seed = async () => {
     );
 
     await db.query(insertIntoFeedbackQuery);
-  } catch (error) {
-    console.log(error);
-  }
+  // } catch (error) {
+  //   console.log(error);
+  // }
 };
 
 export default seed;

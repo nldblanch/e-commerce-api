@@ -1,4 +1,4 @@
-export default [
+const items = [
   {
     username: "tech_guru92",
     name: "Smartphone",
@@ -82,3 +82,5 @@ export default [
     available_item: "TRUE",
   },
 ];
+
+export default items

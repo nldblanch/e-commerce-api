@@ -1,4 +1,4 @@
-export default [
+const users = [
   {
     username: "tech_guru92",
     name: "John Doe",
@@ -60,3 +60,6 @@ export default [
     balance: 35000,
   },
 ];
+
+
+export default users

@@ -1,15 +1,8 @@
-import checkUserExists from "../api/utils/checkUserExists";
-import { feedback, items, users } from "../db/data/test";
-import seed from "../db/seeds/seed";
-import db from "../db/connection";
+import checkUserExists from "../api/utils/checkUserExists.js";
+import db from "../db/connection.js";
 
-beforeEach(() => {
-  const data = { users, items, feedback };
-  return seed(data);
-});
-
-afterAll(() => {
-  return db.end();
+afterAll(async () => {
+  await db.end();
 });
 
 describe("checkUserExists", () => {
@@ -35,7 +28,7 @@ describe("checkUserExists", () => {
     //act
     const actual = checkUserExists(username);
     //assert
-    expect(actual).rejects.toBe({
+    expect(actual).rejects.toEqual({
       code: 409,
       message: "conflict - username already taken",
     });
