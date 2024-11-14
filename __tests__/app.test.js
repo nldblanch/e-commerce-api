@@ -53,7 +53,7 @@ describe("/api/users/:user_id", () => {
     test("400: responds with bad request when given non number", async () => {
       const data = await request(app).get("/api/users/error").expect(400);
       const errorMessage = data.body.message;
-      expect(errorMessage).toBe("bad request - column does not exist");
+      expect(errorMessage).toBe("bad request - invalid id");
     });
     test("404: responds with not found when user doesn't exist", async () => {
       const data = await request(app).get("/api/users/9000").expect(404);

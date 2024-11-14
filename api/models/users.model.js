@@ -3,6 +3,8 @@ import db from "../../db/connection";
 import checkUserExists from "../utils/checkUserExists";
 
 const fetchUserByID = async (id) => {
+  if (!Number(id))
+    return Promise.reject({ code: 400, message: "bad request - invalid id" });
   const { rows } = await db.query(`SELECT * FROM users WHERE id = ${id};`);
   const [data] = rows;
   return data
