@@ -1,4 +1,4 @@
-invalidEndpoint = (request, response) => {
+const invalidEndpoint = (request, response) => {
   response.status(404).send({ status: 404, message: "404 - Not Found" });
 };
 
