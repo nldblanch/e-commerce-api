@@ -1,12 +1,14 @@
 {
   "name": "e-commerce-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./api/listen.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "test": "jest --verbose",
     "prepare": "husky",
-    "seed": "node ./db/seeds/run-seed.js"
+    "seed": "node ./db/seeds/run-seed.js",
+    "start": "node ./api/listen.js",
+    "seed-prod": "NODE_ENV=production npm run seed"
   },
   "type": "module",
   "keywords": [],
