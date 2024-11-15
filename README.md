@@ -1,5 +1,7 @@
 # E-Commerce API
 
+service - https://e-commerce-api-p5t2.onrender.com/api
+
 ## Intro
 
 Hello! Welcome to the beginning of this api. Here is a great space for us to leave comments and updates about the project. 
