@@ -62,6 +62,12 @@
     }
   },
   "/api/users/user_id/items": {
+    "GET": {
+      "description": "gets all items associated with a user",
+      "exampleResponse": {
+        "items": ["example_item", "example_item"]
+      }
+    },
     "POST": {
       "description": "posts a new item to the database for a user",
       "format": {
