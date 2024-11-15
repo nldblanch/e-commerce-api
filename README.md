@@ -41,11 +41,11 @@ Therefore the user data for a post must be in the format:
 }
 ```
 
+#### Get all items of a user
+- essentially their store 
 
 # Next features
 
-#### Get all items of a user
-- essentially their store
 
 #### purchase an item
 
