@@ -1,4 +1,4 @@
-{
+export default {
   "example_user": {
     "id": 1,
     "username": "tech_guru92",

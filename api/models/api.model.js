@@ -1,4 +1,4 @@
-import endpoints from "../../endpoints.json";
+import endpoints from "../../endpoints.js";
 
 const fetchEndpoints = () => {
   return new Promise((resolve, reject) => {

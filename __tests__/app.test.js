@@ -3,7 +3,7 @@ import request from "supertest";
 import db from "../db/connection.js";
 import seed from "../db/seeds/seed.js";
 import app from "../api/app.js";
-import endpointsJSON from "../endpoints.json";
+import endpointsJSON from "../endpoints.js";
 beforeEach(async () => {
   const data = { users, items, feedback };
   try {
