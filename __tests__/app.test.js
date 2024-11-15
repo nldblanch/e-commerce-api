@@ -214,6 +214,49 @@ describe("/api/users", () => {
     });
   });
   describe("/users/:user_id/items", () => {
+    describe("GET - all items associated with a user", () => {
+      test("200: responds with an array of items", async () => {
+        const {
+          body: { items },
+        } = await request(app).get("/api/users/1/items").expect(200);
+        expect(items.length).toBeGreaterThan(0);
+        items.forEach((item) => {
+          expect(item).toMatchObject({
+            id: expect.any(Number),
+            user_id: 1,
+            name: expect.any(String),
+            description: expect.any(String),
+            price: expect.any(Number),
+            date_listed: expect.any(String),
+            available_item: expect.any(Boolean),
+          });
+        });
+      });
+      test("200: successful response when no items found but user exists", async () => {
+        const userData = { username: "nldblanch", name: "Nathan Blanch" };
+        const {
+          body: { user },
+        } = await request(app).post("/api/users").send(userData).expect(201);
+
+        const {
+          body: { items },
+        } = await request(app).get(`/api/users/${user.id}/items`).expect(200);
+        expect(items.length).toBe(0);
+        expect(items).toEqual([]);
+      });
+      test("400: bad request - when given non number id", async () => {
+        const {
+          body: { message },
+        } = await request(app).get(`/api/users/something/items`).expect(400);
+        expect(message).toBe("bad request - invalid id");
+      });
+      test("404: not found when user id doesn't exist", async () => {
+        const {
+          body: { message },
+        } = await request(app).get(`/api/users/9000/items`).expect(404);
+        expect(message).toBe("user id not found");
+      });
+    });
     describe("POST - add a new item", () => {
       test("201: adds item to database and returns that item", async () => {
         const itemData = {

@@ -61,4 +61,9 @@ const updateItem = async (user_id, item_id, entries) => {
     : Promise.reject({ code: 404, message: "item id not found" });
 };
 
-export { fetchAllItems, fetchItem, insertItem, updateItem };
+const fetchUserItems = async (id) => {
+    const { rows } = await db.query(`SELECT * FROM items WHERE user_id = $1;`, [id]);
+    return rows;
+}
+
+export { fetchAllItems, fetchItem, insertItem, updateItem, fetchUserItems };

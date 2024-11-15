@@ -3,6 +3,7 @@ import {
   fetchItem,
   insertItem,
   updateItem,
+  fetchUserItems
 } from "../models/items.model";
 import { fetchUserByID } from "../models/users.model";
 import greenlist from "../utils/greenlist";
@@ -53,4 +54,16 @@ const patchItem = async (request, response, next) => {
   }
 };
 
-export { getAllItems, getItemByID, postItem, patchItem };
+const getUserItems = async (request, response, next) => {
+    const { user_id } = request.params;
+    try {
+        await fetchUserByID(user_id);
+        const items = await fetchUserItems(user_id);
+        response.status(200).send({ items });
+      } catch (error) {
+        console.log(error)
+        next(error);
+      }
+}
+
+export { getAllItems, getItemByID, postItem, patchItem, getUserItems };
