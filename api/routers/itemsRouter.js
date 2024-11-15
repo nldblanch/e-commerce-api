@@ -1,4 +1,4 @@
-import { getAllItems, getItemByID } from "../controllers/items.controller";
+import { getAllItems, getItemByID } from "../controllers/items.controller.js";
 import express from "express";
 const itemsRouter = express.Router();
 
