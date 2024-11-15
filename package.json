@@ -1,7 +1,7 @@
 {
   "name": "e-commerce-api",
   "version": "1.0.0",
-  "main": "./api/listen.js",
+  "main": "listen.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "test": "jest --verbose",
