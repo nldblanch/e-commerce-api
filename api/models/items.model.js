@@ -1,5 +1,5 @@
 import format from "pg-format";
-import db from "../../db/connection";
+import db from "../../db/connection.js";
 
 const fetchAllItems = async () => {
   const { rows } = await db.query(

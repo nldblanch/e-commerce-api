@@ -4,10 +4,10 @@ import {
   insertItem,
   updateItem,
   fetchUserItems
-} from "../models/items.model";
-import { fetchUserByID } from "../models/users.model";
-import greenlist from "../utils/greenlist";
-import strictGreenlist from "../utils/strictGreenlist";
+} from "../models/items.model.js";
+import { fetchUserByID } from "../models/users.model.js";
+import greenlist from "../utils/greenlist.js";
+import strictGreenlist from "../utils/strictGreenlist.js";
 
 const getAllItems = async (request, response, next) => {
   try {

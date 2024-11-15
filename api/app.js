@@ -1,6 +1,6 @@
 import express from "express";
-import apiRouter from "./routers/apiRouter";
-import invalidEndpoint from "./error-handling/invalidEndpoint";
+import apiRouter from "./routers/apiRouter.js";
+import invalidEndpoint from "./error-handling/invalidEndpoint.js";
 const app = express();
 app.use(express.json());
 

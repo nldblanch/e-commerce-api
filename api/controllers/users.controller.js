@@ -1,6 +1,6 @@
-import { fetchUserByID, insertUser, updateUser } from "../models/users.model";
-import strictGreenlist from "../utils/strictGreenlist";
-import greenlist from "../utils/greenlist";
+import { fetchUserByID, insertUser, updateUser } from "../models/users.model.js";
+import strictGreenlist from "../utils/strictGreenlist.js";
+import greenlist from "../utils/greenlist.js";
 
 const getUserByID = async (request, response, next) => {
   const { user_id } = request.params;

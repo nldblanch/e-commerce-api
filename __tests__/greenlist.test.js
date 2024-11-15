@@ -1,4 +1,4 @@
-import greenlist from "../api/utils/strictGreenlist";
+import greenlist from "../api/utils/strictGreenlist.js";
 
 describe("greenlist", () => {
   test("returns a promise", async () => {

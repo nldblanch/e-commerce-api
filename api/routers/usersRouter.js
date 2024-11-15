@@ -2,12 +2,12 @@ import {
   postItem,
   patchItem,
   getUserItems,
-} from "../controllers/items.controller";
+} from "../controllers/items.controller.js";
 import {
   getUserByID,
   postUser,
   patchUser,
-} from "../controllers/users.controller";
+} from "../controllers/users.controller.js";
 import express from "express";
 const usersRouter = express.Router();
 

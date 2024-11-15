@@ -1,4 +1,4 @@
-import fetchEndpoints from "../models/api.model";
+import fetchEndpoints from "../models/api.model.js";
 
 const getEndpoints = (request, response, next) => {
   fetchEndpoints().then((endpoints) => {
