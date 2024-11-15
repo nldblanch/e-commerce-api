@@ -48,6 +48,12 @@ Therefore the user data for a post must be in the format:
 
 
 #### purchase an item
+/orders
+- POST
+- PATCH
+
+/orders/:order_id
+- GET
 
 
 #### Queries
