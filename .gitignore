@@ -1,2 +1,6 @@
 node_modules
 .env.*
+data-generator.js
+item-data.js
+user-data.js
+db/data/development

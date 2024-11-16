@@ -1,5 +1,5 @@
 
-import { users, items, feedback } from "../data/test/index.js";
+import { users, items, feedback } from "../data/development/index.js";
 import seed from "./seed.js";
 import db from "../connection.js"
 
