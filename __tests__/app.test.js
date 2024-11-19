@@ -842,15 +842,66 @@ describe("/api/items", () => {
         });
       });
       test("400: responds with bad request when given non number", async () => {
-        const data = await request(app).get("/api/items/error").expect(400);
-        const errorMessage = data.body.message;
-        expect(errorMessage).toBe("bad request - invalid id");
+        const {
+          body: { message },
+        } = await request(app).get("/api/items/error").expect(400);
+
+        expect(message).toBe("bad request - invalid id");
       });
       test("404: responds with not found when item doesn't exist", async () => {
-        const data = await request(app).get("/api/items/9000").expect(404);
+        const {
+          body: { message },
+        } = await request(app).get("/api/items/9000").expect(404);
 
-        const errorMessage = data.body.message;
-        expect(errorMessage).toBe("item id not found");
+        expect(message).toBe("item id not found");
+      });
+    });
+  });
+});
+
+describe("/api/categories", () => {
+  describe("/categories", () => {
+    describe("GET - all categories", () => {
+      test("200: responds with an array of all categories", async () => {
+        const {
+          body: { categories },
+        } = await request(app).get("/api/categories").expect(200);
+        expect(categories.length).toBeGreaterThan(0);
+        categories.forEach((category) => {
+          expect(category).toMatchObject({
+            id: expect.any(Number),
+            category_name: expect.any(String),
+          });
+        });
+      });
+    });
+  });
+  describe("/categories/:category_id", () => {
+    describe("GET - all subcategories associated with a category", () => {
+      test("200: responds with an array of all categories", async () => {
+        const {
+          body: { subcategories },
+        } = await request(app).get("/api/categories/1").expect(200);
+        expect(subcategories.length).toBeGreaterThan(0);
+        subcategories.forEach((subcategory) => {
+          expect(subcategory).toMatchObject({
+            id: expect.any(Number),
+            category_id: 1,
+            subcategory_name: expect.any(String),
+          });
+        });
+      });
+      test("400: responds with bad request when given non number", async () => {
+        const {
+          body: { message },
+        } = await request(app).get("/api/categories/error").expect(400);
+        expect(message).toBe("bad request - invalid id");
+      });
+      test("404: responds with an array of all categories", async () => {
+        const {
+          body: { message },
+        } = await request(app).get("/api/categories/100").expect(404);
+        expect(message).toBe("category id not found");
       });
     });
   });
