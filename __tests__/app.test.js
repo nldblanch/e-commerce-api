@@ -445,6 +445,160 @@ describe("/api/users", () => {
           .expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+      test("200: can update item tag", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
+            price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+          })
+          .expect(201);
+
+        const patchData = { tag: "apple products" };
+
+        const {
+          body: { item },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(200);
+        expect(item).toMatchObject({ ...macbook, ...patchData });
+      });
+      test("200: can update item photo description", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
+            price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+          })
+          .expect(201);
+
+        const patchData = { photo_description: "used macbook air, space grey" };
+
+        const {
+          body: { item },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(200);
+        expect(item).toMatchObject({ ...macbook, ...patchData });
+      });
+      test("200: can update item photo source", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
+            price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+          })
+          .expect(201);
+
+        const patchData = {
+          photo_source:
+            "https://images.unsplash.com/photo-1719937050445-098888c0625e?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxtYWNib29rfGVufDB8fHx8MTczMTg1ODMwMnww&ixlib=rb-4.0.3",
+        };
+
+        const {
+          body: { item },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(200);
+        expect(item).toMatchObject({ ...macbook, ...patchData });
+      });
+      test("200: can update item photo link", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
+            price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+          })
+          .expect(201);
+
+        const patchData = {
+          photo_link:
+            "https://unsplash.com/photos/a-person-sitting-at-a-table-with-a-laptop-and-a-mouse-Tnm-287tzHQ",
+        };
+
+        const {
+          body: { item },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(200);
+        expect(item).toMatchObject({ ...macbook, ...patchData });
+      });
+      test("200: can update item photo subcategory", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
+            price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+          })
+          .expect(201);
+
+        const patchData = {
+          subcategory_id:
+            16,
+        };
+
+        const {
+          body: { item },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(200);
+        expect(item).toMatchObject({ ...macbook, ...patchData });
+      });
       test("200: can update any number of values", async () => {
         const {
           body: { item: macbook },

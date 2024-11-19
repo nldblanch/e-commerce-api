@@ -45,7 +45,7 @@ const patchItem = async (request, response, next) => {
   const { user_id, item_id } = request.params;
   const { body } = request;
   try {
-    await greenlist(["name", "description", "price"], Object.keys(body));
+    await greenlist(["name", "description", "price", "tag", "subcategory_id", "photo_description", "photo_source", "photo_link"], Object.keys(body));
     await fetchUserByID(user_id);
     const item = await updateItem(user_id, item_id, Object.entries(body));
     response.status(200).send({ item });
