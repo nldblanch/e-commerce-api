@@ -14,7 +14,6 @@ const getSubcategories = async (request, response, next) => {
     const subcategories = await fetchSubcategories(category_id);
     response.status(200).send({ subcategories });
   } catch (error) {
-    console.log(error)
     next(error);
   }
 };

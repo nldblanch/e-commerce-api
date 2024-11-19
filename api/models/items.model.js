@@ -1,11 +1,19 @@
 import format from "pg-format";
 import db from "../../db/connection.js";
 
-const fetchAllItems = async () => {
-  const { rows } = await db.query(
-    `SELECT * FROM items WHERE available_item = TRUE ;`
-  );
-
+const fetchAllItems = async ({ category }) => {
+  const queries = [];
+  let queryString = `
+    SELECT items.*, categories.id AS category_id 
+    FROM items 
+    LEFT JOIN categories 
+    ON items.category_id = categories.id 
+    WHERE available_item = TRUE `;
+  if (category) {
+    queryString += `AND category_name = $1`;
+    queries.push(category);
+  }
+  const { rows } = await db.query(queryString, queries);
   return rows;
 };
 
@@ -19,18 +27,44 @@ const fetchItem = async (id) => {
     : Promise.reject({ code: 404, message: "item id not found" });
 };
 
-const insertItem = async (id, {name, description, tag, subcategory_id, price, photo_description, photo_source, photo_link}) => {
-    const insertItemString = format(
-        `
-          INSERT INTO items (user_id, name, description, tag, subcategory_id, price, photo_description, photo_source, photo_link) 
+const insertItem = async (
+  id,
+  {
+    name,
+    description,
+    tag,
+    category_id,
+    subcategory_id,
+    price,
+    photo_description,
+    photo_source,
+    photo_link,
+  }
+) => {
+  const insertItemString = format(
+    `
+          INSERT INTO items (user_id, name, description, tag, category_id, subcategory_id, price, photo_description, photo_source, photo_link) 
           VALUES %L RETURNING *
           ;`,
-        [[id, name, description, tag, subcategory_id, price, photo_description, photo_source, photo_link]]
-      );
-      const { rows } = await db.query(insertItemString);
-      const [data] = rows;
-      return data;
-}
+    [
+      [
+        id,
+        name,
+        description,
+        tag,
+        category_id,
+        subcategory_id,
+        price,
+        photo_description,
+        photo_source,
+        photo_link,
+      ],
+    ]
+  );
+  const { rows } = await db.query(insertItemString);
+  const [data] = rows;
+  return data;
+};
 
 const updateItem = async (user_id, item_id, entries) => {
   const item = await fetchItem(item_id);

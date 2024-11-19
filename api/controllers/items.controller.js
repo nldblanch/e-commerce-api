@@ -1,3 +1,4 @@
+import { fetchCategoryFromSubcategory } from "../models/categories.model.js";
 import {
   fetchAllItems,
   fetchItem,
@@ -10,8 +11,9 @@ import greenlist from "../utils/greenlist.js";
 import strictGreenlist from "../utils/strictGreenlist.js";
 
 const getAllItems = async (request, response, next) => {
+  const queries = request.query;
   try {
-    const items = await fetchAllItems();
+    const items = await fetchAllItems(queries);
     response.status(200).send({ items });
   } catch (error) {
     next(error);
@@ -32,7 +34,20 @@ const postItem = async (request, response, next) => {
   const { user_id } = request.params;
   const { body } = request;
   try {
-    await strictGreenlist(["name", "description", "price", "tag", "subcategory_id", "photo_description", "photo_source", "photo_link"], Object.keys(body));
+    await strictGreenlist(
+      [
+        "name",
+        "description",
+        "price",
+        "tag",
+        "category_id",
+        "subcategory_id",
+        "photo_description",
+        "photo_source",
+        "photo_link",
+      ],
+      Object.keys(body)
+    );
     await fetchUserByID(user_id);
     const item = await insertItem(user_id, body);
     response.status(201).send({ item });
@@ -45,9 +60,27 @@ const patchItem = async (request, response, next) => {
   const { user_id, item_id } = request.params;
   const { body } = request;
   try {
-    await greenlist(["name", "description", "price", "tag", "subcategory_id", "photo_description", "photo_source", "photo_link"], Object.keys(body));
+    await greenlist(
+      [
+        "name",
+        "description",
+        "price",
+        "tag",
+        "category_id",
+        "subcategory_id",
+        "photo_description",
+        "photo_source",
+        "photo_link",
+      ],
+      Object.keys(body)
+    );
     await fetchUserByID(user_id);
-    const item = await updateItem(user_id, item_id, Object.entries(body));
+    const entries = Object.entries(body)
+    if (body.subcategory_id) {
+      const {category_id} = await fetchCategoryFromSubcategory(body.subcategory_id) 
+      entries.push(["category_id", category_id])
+    }
+    const item = await updateItem(user_id, item_id, entries);
     response.status(200).send({ item });
   } catch (error) {
     next(error);

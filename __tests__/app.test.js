@@ -270,6 +270,7 @@ describe("/api/users", () => {
           name: "Macbook Air 2020",
           description: "Used, but taken well care of",
           tag: "laptop",
+          category_id: 4,
           subcategory_id: 15,
           price: 50000,
           photo_description: "A person using a laptop computer on a table",
@@ -314,6 +315,7 @@ describe("/api/users", () => {
           item: "Macbook Air 2020",
           description: "Used, but taken well care of",
           tag: "laptop",
+          category_id: 4,
           subcategory_id: 15,
           price: 50000,
           photo_description: "A person using a laptop computer on a table",
@@ -335,6 +337,7 @@ describe("/api/users", () => {
           name: "Macbook Air 2020",
           description: "Used, but taken well care of",
           tag: "laptop",
+          category_id: 4,
           subcategory_id: 15,
           price: 50000,
           photo_description: "A person using a laptop computer on a table",
@@ -364,6 +367,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -393,6 +397,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -425,6 +430,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -454,6 +460,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -483,6 +490,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -512,6 +520,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -544,6 +553,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -567,7 +577,7 @@ describe("/api/users", () => {
           .expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
-      test("200: can update item photo subcategory", async () => {
+      test("200: can update item subcategory", async () => {
         const {
           body: { item: macbook },
         } = await request(app)
@@ -576,6 +586,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -587,8 +598,7 @@ describe("/api/users", () => {
           .expect(201);
 
         const patchData = {
-          subcategory_id:
-            16,
+          subcategory_id: 16,
         };
 
         const {
@@ -599,6 +609,42 @@ describe("/api/users", () => {
           .expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+      test("200: updating item subcategory updates main category", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            tag: "laptop",
+            category_id: 4,
+            subcategory_id: 15,
+            price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+          })
+          .expect(201);
+
+        const patchData = {
+          subcategory_id: 1,
+        };
+
+        const {
+          body: { item },
+        } = await request(app)
+          .patch(`/api/users/1/items/${macbook.id}`)
+          .send(patchData)
+          .expect(200);
+        expect(item).toMatchObject({
+          ...macbook,
+          ...patchData,
+          category_id: 1,
+        });
+      });
       test("200: can update any number of values", async () => {
         const {
           body: { item: macbook },
@@ -608,6 +654,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -642,6 +689,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -671,6 +719,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -700,6 +749,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -729,6 +779,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -758,6 +809,7 @@ describe("/api/users", () => {
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
             tag: "laptop",
+            category_id: 4,
             subcategory_id: 15,
             price: 50000,
             photo_description: "A person using a laptop computer on a table",
@@ -815,6 +867,143 @@ describe("/api/items", () => {
         items.forEach((item) => {
           expect(item).toMatchObject({
             available_item: true,
+          });
+        });
+      });
+      describe("queries", () => {
+        describe("?category=", () => {
+          test("200: clothing_and_accessories", async () => {
+            const {
+              body: { categories },
+            } = await request(app).get("/api/categories");
+            const {
+              body: { items },
+            } = await request(app)
+              .get("/api/items?category=clothing_and_accessories")
+              .expect(200);
+            const [{ id }] = categories.filter(
+              (category) =>
+                category.category_name === "clothing_and_accessories"
+            );
+            items.forEach((item) => {
+              expect(item).toMatchObject({
+                category_id: id,
+              });
+            });
+          });
+          test("200: beauty_and_personal_care", async () => {
+            const {
+              body: { categories },
+            } = await request(app).get("/api/categories");
+            const {
+              body: { items },
+            } = await request(app)
+              .get("/api/items?category=beauty_and_personal_care")
+              .expect(200);
+            const [{ id }] = categories.filter(
+              (category) =>
+                category.category_name === "beauty_and_personal_care"
+            );
+            items.forEach((item) => {
+              expect(item).toMatchObject({
+                category_id: id,
+              });
+            });
+          });
+          test("200: home_and_living", async () => {
+            const {
+              body: { categories },
+            } = await request(app).get("/api/categories");
+            const {
+              body: { items },
+            } = await request(app)
+              .get("/api/items?category=home_and_living")
+              .expect(200);
+            const [{ id }] = categories.filter(
+              (category) =>
+                category.category_name === "home_and_living"
+            );
+            items.forEach((item) => {
+              expect(item).toMatchObject({
+                category_id: id,
+              });
+            });
+          });
+          test("200: electronics_and_gadgets", async () => {
+            const {
+              body: { categories },
+            } = await request(app).get("/api/categories");
+            const {
+              body: { items },
+            } = await request(app)
+              .get("/api/items?category=electronics_and_gadgets")
+              .expect(200);
+            const [{ id }] = categories.filter(
+              (category) =>
+                category.category_name === "electronics_and_gadgets"
+            );
+            items.forEach((item) => {
+              expect(item).toMatchObject({
+                category_id: id,
+              });
+            });
+          });
+          test("200: food_and_beverages", async () => {
+            const {
+              body: { categories },
+            } = await request(app).get("/api/categories");
+            const {
+              body: { items },
+            } = await request(app)
+              .get("/api/items?category=food_and_beverages")
+              .expect(200);
+            const [{ id }] = categories.filter(
+              (category) =>
+                category.category_name === "food_and_beverages"
+            );
+            items.forEach((item) => {
+              expect(item).toMatchObject({
+                category_id: id,
+              });
+            });
+          });
+          test("200: toys_and_games", async () => {
+            const {
+              body: { categories },
+            } = await request(app).get("/api/categories");
+            const {
+              body: { items },
+            } = await request(app)
+              .get("/api/items?category=toys_and_games")
+              .expect(200);
+            const [{ id }] = categories.filter(
+              (category) =>
+                category.category_name === "toys_and_games"
+            );
+            items.forEach((item) => {
+              expect(item).toMatchObject({
+                category_id: id,
+              });
+            });
+          });
+          test("200: sports_and_outdoors", async () => {
+            const {
+              body: { categories },
+            } = await request(app).get("/api/categories");
+            const {
+              body: { items },
+            } = await request(app)
+              .get("/api/items?category=sports_and_outdoors")
+              .expect(200);
+            const [{ id }] = categories.filter(
+              (category) =>
+                category.category_name === "sports_and_outdoors"
+            );
+            items.forEach((item) => {
+              expect(item).toMatchObject({
+                category_id: id,
+              });
+            });
           });
         });
       });

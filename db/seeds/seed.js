@@ -25,7 +25,7 @@ const seed = async ({ users, items, feedback, categories }) => {
     "id"
   );
 
-  await insertItems(items, userIdLookup, subcategoryIdLookup);
+  await insertItems(items, userIdLookup, categoryIdLookup, subcategoryIdLookup);
 
   await insertFeedback(feedback, userIdLookup);
 };
@@ -67,6 +67,7 @@ const createTables = async () => {
       ,name VARCHAR NOT NULL
       ,description VARCHAR NOT NULL
       ,tag VARCHAR NOT NULL
+      ,category_id INT NOT NULL
       ,subcategory_id INT NOT NULL
       ,price INT NOT NULL
       ,date_listed TIMESTAMP DEFAULT NOW()
@@ -74,6 +75,7 @@ const createTables = async () => {
       ,photo_source VARCHAR
       ,photo_link VARCHAR
       ,available_item BOOLEAN DEFAULT TRUE
+      ,FOREIGN KEY(category_id) REFERENCES categories(id)
       ,FOREIGN KEY(subcategory_id) REFERENCES subcategories(id)
       );`);
 
@@ -152,12 +154,13 @@ const insertSubcategories = async (categories, categoryIdLookup) => {
   return db.query(insertIntoSubcategoriesQuery);
 };
 
-const insertItems = async (items, userIdLookup, subcategoryIdLookup) => {
+const insertItems = async (items, userIdLookup, categoryIdLookup, subcategoryIdLookup) => {
   const itemsQueryData = items.map(
     ({
       username,
       name,
       description,
+      category,
       subcategory,
       tag,
       price,
@@ -166,12 +169,14 @@ const insertItems = async (items, userIdLookup, subcategoryIdLookup) => {
       available_item,
     }) => {
       const user_id = userIdLookup[username];
+      const category_id = categoryIdLookup[category];
       const subcategory_id = subcategoryIdLookup[subcategory];
       return [
         user_id,
         name,
         description,
         tag,
+        category_id,
         subcategory_id,
         price,
         convertDateToTimestamp(date_listed),
@@ -189,6 +194,7 @@ const insertItems = async (items, userIdLookup, subcategoryIdLookup) => {
                 ,name
                 ,description
                 ,tag
+                ,category_id
                 ,subcategory_id
                 ,price
                 ,date_listed

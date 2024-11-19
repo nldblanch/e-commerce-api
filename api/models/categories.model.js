@@ -17,4 +17,14 @@ const fetchSubcategories = async (category_id) => {
     : rows;
 };
 
-export { fetchSubcategories, fetchAllCategories };
+const fetchCategoryFromSubcategory = async (subcategory_id) => {
+  const {rows} = await db.query(`
+    SELECT category_id 
+    FROM subcategories
+    WHERE id = $1
+    `, [subcategory_id])
+  const [data] = rows
+  return data
+}
+
+export { fetchSubcategories, fetchAllCategories, fetchCategoryFromSubcategory };
