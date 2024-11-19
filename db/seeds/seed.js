@@ -3,65 +3,94 @@ import db from "../connection.js";
 import { createRef, convertDateToTimestamp } from "./seed-utils.js";
 
 const seed = async ({ users, items, feedback, categories }) => {
-  await db.query("DROP SEQUENCE IF EXISTS items_id_seq CASCADE;");
-  await db.query("DROP SEQUENCE IF EXISTS users_id_seq CASCADE;");
-  await db.query("DROP TABLE IF EXISTS feedback;");
+  await dropTables();
+  await createTables();
 
+  const userData = await insertUsers(users);
+
+  const userIdLookup = createRef(userData.rows, "username", "id");
+
+  const categoryData = await insertCategories(categories);
+
+  const categoryIdLookup = createRef(categoryData.rows, "category_name", "id");
+
+  const subcategoriesData = await insertSubcategories(
+    categories,
+    categoryIdLookup
+  );
+
+  const subcategoryIdLookup = createRef(
+    subcategoriesData.rows,
+    "subcategory_name",
+    "id"
+  );
+
+  await insertItems(items, userIdLookup, subcategoryIdLookup);
+
+  await insertFeedback(feedback, userIdLookup);
+};
+
+const dropTables = async () => {
+  await db.query("DROP TABLE IF EXISTS feedback;");
   await db.query("DROP TABLE IF EXISTS items;");
   await db.query("DROP TABLE IF EXISTS subcategories");
   await db.query("DROP TABLE IF EXISTS categories");
   await db.query("DROP TABLE IF EXISTS users;");
+};
+
+const createTables = async () => {
+  await db.query(`
+    CREATE TABLE users (
+    id SERIAL PRIMARY KEY
+    ,username VARCHAR NOT NULL UNIQUE
+    ,name VARCHAR NOT NULL
+    ,avatar_url VARCHAR DEFAULT 'https://www.gravatar.com/avatar/3b3be63a4c2a439b013787725dfce802?d=identicon'
+    ,date_registered TIMESTAMP DEFAULT NOW()
+    ,balance INTEGER DEFAULT 0
+    );`);
+  await db.query(`
+      CREATE TABLE categories (
+      id SERIAL PRIMARY KEY
+      ,category_name VARCHAR NOT NULL
+      );`);
+  await db.query(`
+      CREATE TABLE subcategories (
+      id SERIAL PRIMARY KEY
+      ,category_id INT NOT NULL
+      ,subcategory_name VARCHAR NOT NULL
+      ,FOREIGN KEY(category_id) REFERENCES categories(id)
+      );`);
+  await db.query(`
+      CREATE TABLE items (
+      id SERIAL PRIMARY KEY
+      ,user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
+      ,name VARCHAR NOT NULL
+      ,description VARCHAR NOT NULL
+      ,tag VARCHAR NOT NULL
+      ,subcategory_id INT NOT NULL
+      ,price INT NOT NULL
+      ,date_listed TIMESTAMP DEFAULT NOW()
+      ,photo_description VARCHAR
+      ,photo_source VARCHAR
+      ,photo_link VARCHAR
+      ,available_item BOOLEAN DEFAULT TRUE
+      ,FOREIGN KEY(subcategory_id) REFERENCES subcategories(id)
+      );`);
 
   await db.query(`
-                  CREATE TABLE users (
-                  id SERIAL PRIMARY KEY
-                  ,username VARCHAR NOT NULL UNIQUE
-                  ,name VARCHAR NOT NULL
-                  ,avatar_url VARCHAR DEFAULT 'https://www.gravatar.com/avatar/3b3be63a4c2a439b013787725dfce802?d=identicon'
-                  ,date_registered TIMESTAMP DEFAULT NOW()
-                  ,balance INTEGER DEFAULT 0
-                  );`);
-  await db.query(`
-                  CREATE TABLE categories (
-                  id SERIAL PRIMARY KEY
-                  ,category_name VARCHAR NOT NULL
-                  );`);
-  await db.query(`
-                  CREATE TABLE subcategories (
-                  id SERIAL PRIMARY KEY
-                  ,category_id INT NOT NULL
-                  ,subcategory_name VARCHAR NOT NULL
-                  ,FOREIGN KEY(category_id) REFERENCES categories(id)
-                  );`);
-  await db.query(`
-                  CREATE TABLE items (
-                  id SERIAL PRIMARY KEY
-                  ,user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
-                  ,name VARCHAR NOT NULL
-                  ,description VARCHAR NOT NULL
-                  ,tag VARCHAR NOT NULL
-                  ,subcategory_id INT NOT NULL
-                  ,price INT NOT NULL
-                  ,date_listed TIMESTAMP DEFAULT NOW()
-                  ,photo_description VARCHAR
-                  ,photo_source VARCHAR
-                  ,photo_link VARCHAR
-                  ,available_item BOOLEAN DEFAULT TRUE
-                  ,FOREIGN KEY(subcategory_id) REFERENCES subcategories(id)
-                  );`);
+      CREATE TABLE feedback (
+      seller_id INT NOT NULL,
+      buyer_id INT NOT NULL,
+      rating INT NOT NULL,
+      comment VARCHAR NOT NULL,
+      date_left TIMESTAMP DEFAULT NOW(),
+      FOREIGN KEY(seller_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY(buyer_id) REFERENCES users(id) ON DELETE CASCADE,
+      CONSTRAINT different_users CHECK (seller_id != buyer_id)
+      );`);
+};
 
-  await db.query(`
-                  CREATE TABLE feedback (
-                  seller_id INT NOT NULL,
-                  buyer_id INT NOT NULL,
-                  rating INT NOT NULL,
-                  comment VARCHAR NOT NULL,
-                  date_left TIMESTAMP DEFAULT NOW(),
-                  FOREIGN KEY(seller_id) REFERENCES users(id) ON DELETE CASCADE,
-                  FOREIGN KEY(buyer_id) REFERENCES users(id) ON DELETE CASCADE,
-                  CONSTRAINT different_users CHECK (seller_id != buyer_id)
-                  );`);
-
+const insertUsers = async (users) => {
   const usersQueryData = users.map(
     ({ username, name, date_registered, balance }) => {
       return [username, name, convertDateToTimestamp(date_registered), balance];
@@ -80,8 +109,10 @@ const seed = async ({ users, items, feedback, categories }) => {
     usersQueryData
   );
 
-  const userData = await db.query(insertIntoUsersQuery);
+  return db.query(insertIntoUsersQuery);
+};
 
+const insertCategories = async (categories) => {
   const categoriesQueryData = categories.map((category) => {
     return [category.name];
   });
@@ -95,17 +126,18 @@ const seed = async ({ users, items, feedback, categories }) => {
     categoriesQueryData
   );
 
-  const categoryData = await db.query(insertIntoCategoriesQuery)
+  return db.query(insertIntoCategoriesQuery);
+};
 
-  const categoryIdLookup = createRef(categoryData.rows, "category_name", "id")
-
-  const subcategoriesQueryData = categories.map(({name, subcategories}) => {
-    const category_id = categoryIdLookup[name]
-    return subcategories.map((subcategory) => {
-      return [category_id, subcategory]
+const insertSubcategories = async (categories, categoryIdLookup) => {
+  const subcategoriesQueryData = categories
+    .map(({ name, subcategories }) => {
+      const category_id = categoryIdLookup[name];
+      return subcategories.map((subcategory) => {
+        return [category_id, subcategory];
+      });
     })
-    
-  }).flat()
+    .flat();
   const insertIntoSubcategoriesQuery = format(
     `INSERT INTO subcategories (
                               category_id,
@@ -115,16 +147,26 @@ const seed = async ({ users, items, feedback, categories }) => {
                         RETURNING *  
     ;`,
     subcategoriesQueryData
-  )
+  );
 
-  const subcategoriesData = await db.query(insertIntoSubcategoriesQuery)
-  const subcategoryIdLookup = createRef(subcategoriesData.rows, "subcategory_name", "id")
-  const userIdLookup = createRef(userData.rows, "username", "id");
+  return db.query(insertIntoSubcategoriesQuery);
+};
 
+const insertItems = async (items, userIdLookup, subcategoryIdLookup) => {
   const itemsQueryData = items.map(
-    ({ username, name, description, subcategory, tag, price, date_listed, photo: {alt_description, url, link}, available_item }) => {
+    ({
+      username,
+      name,
+      description,
+      subcategory,
+      tag,
+      price,
+      date_listed,
+      photo: { alt_description, url, link },
+      available_item,
+    }) => {
       const user_id = userIdLookup[username];
-      const subcategory_id = subcategoryIdLookup[subcategory]
+      const subcategory_id = subcategoryIdLookup[subcategory];
       return [
         user_id,
         name,
@@ -160,8 +202,10 @@ const seed = async ({ users, items, feedback, categories }) => {
     itemsQueryData
   );
 
-  await db.query(insertIntoItemsQuery);
+  return db.query(insertIntoItemsQuery);
+};
 
+const insertFeedback = async (feedback, userIdLookup) => {
   const feedbackQueryData = feedback.map(
     ({ seller, buyer, rating, comment, date_left }, i) => {
       const seller_id = userIdLookup[seller];
@@ -189,7 +233,7 @@ const seed = async ({ users, items, feedback, categories }) => {
     feedbackQueryData
   );
 
-  await db.query(insertIntoFeedbackQuery);
+  return db.query(insertIntoFeedbackQuery);
 };
 
 export default seed;
