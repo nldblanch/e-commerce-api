@@ -1,17 +1,15 @@
-import { users, items, feedback } from "../db/data/test";
+import data from "../db/data/test";
 import request from "supertest";
 import db from "../db/connection.js";
 import seed from "../db/seeds/seed.js";
 import app from "../api/app.js";
 import endpointsJSON from "../endpoints.js";
 beforeEach(async () => {
-  const data = { users, items, feedback };
   try {
     await seed(data);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-    
 });
 
 afterAll(async () => {
@@ -62,7 +60,12 @@ describe("/api/users", () => {
         expect(message).toBe("bad request - invalid key or value");
       });
       test("409: responds with conflict when username already taken", async () => {
-        const userData = { username: "tech_guru92", name: "Nathan Blanch" };
+        const userData = { username: "nldblanch", name: "Nathan Blanch" };
+        const { body: {user} } = await request(app)
+          .post("/api/users")
+          .send(userData)
+          .expect(201);
+        expect(user).toMatchObject(userData);
         const {
           body: { message },
         } = await request(app).post("/api/users").send(userData).expect(409);
@@ -226,8 +229,12 @@ describe("/api/users", () => {
             user_id: 1,
             name: expect.any(String),
             description: expect.any(String),
+            subcategory_id: expect.any(Number),
             price: expect.any(Number),
             date_listed: expect.any(String),
+            photo_description: expect.any(String),
+            photo_source: expect.any(String),
+            photo_link: expect.any(String),
             available_item: expect.any(Boolean),
           });
         });
@@ -262,20 +269,26 @@ describe("/api/users", () => {
         const itemData = {
           name: "Macbook Air 2020",
           description: "Used, but taken well care of",
+          tag: "laptop",
+          subcategory_id: 15,
           price: 50000,
+          photo_description: "A person using a laptop computer on a table",
+          photo_source:
+            "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+          photo_link:
+            "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
         };
+
         const {
           body: { item },
         } = await request(app)
           .post("/api/users/1/items")
           .send(itemData)
           .expect(201);
+        expect(item).toMatchObject(itemData);
         expect(item).toMatchObject({
           id: expect.any(Number),
           user_id: 1,
-          name: "Macbook Air 2020",
-          description: "Used, but taken well care of",
-          price: 50000,
           date_listed: expect.any(String),
           available_item: true,
         });
@@ -300,7 +313,14 @@ describe("/api/users", () => {
         const itemData = {
           item: "Macbook Air 2020",
           description: "Used, but taken well care of",
+          tag: "laptop",
+          subcategory_id: 15,
           price: 50000,
+          photo_description: "A person using a laptop computer on a table",
+          photo_source:
+            "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+          photo_link:
+            "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
         };
         const {
           body: { message },
@@ -314,7 +334,14 @@ describe("/api/users", () => {
         const itemData = {
           name: "Macbook Air 2020",
           description: "Used, but taken well care of",
+          tag: "laptop",
+          subcategory_id: 15,
           price: 50000,
+          photo_description: "A person using a laptop computer on a table",
+          photo_source:
+            "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+          photo_link:
+            "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
         };
         const {
           body: { message },
@@ -336,7 +363,14 @@ describe("/api/users", () => {
           .send({
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
             price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -358,7 +392,14 @@ describe("/api/users", () => {
           .send({
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
             price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -383,7 +424,14 @@ describe("/api/users", () => {
           .send({
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
             price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -405,7 +453,14 @@ describe("/api/users", () => {
           .send({
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
             price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -432,7 +487,14 @@ describe("/api/users", () => {
           .send({
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
             price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -454,7 +516,14 @@ describe("/api/users", () => {
           .send({
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
             price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -476,7 +545,14 @@ describe("/api/users", () => {
           .send({
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
             price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -498,7 +574,14 @@ describe("/api/users", () => {
           .send({
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
             price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -520,7 +603,14 @@ describe("/api/users", () => {
           .send({
             name: "Macbook Air 2020",
             description: "Used, but taken well care of",
+            tag: "laptop",
+            subcategory_id: 15,
             price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source:
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            photo_link:
+              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -548,14 +638,20 @@ describe("/api/items", () => {
           body: { items },
         } = await request(app).get("/api/items").expect(200);
         expect(items.length).toBeGreaterThan(0);
-        expect(items[0]).toMatchObject({
-          id: 1,
-          user_id: expect.any(Number),
-          name: expect.any(String),
-          description: expect.any(String),
-          price: expect.any(Number),
-          date_listed: expect.any(String),
-          available_item: expect.any(Boolean),
+        items.forEach((item) => {
+          expect(item).toMatchObject({
+            id: expect.any(Number),
+            user_id: expect.any(Number),
+            name: expect.any(String),
+            description: expect.any(String),
+            subcategory_id: expect.any(Number),
+            price: expect.any(Number),
+            date_listed: expect.any(String),
+            photo_description: expect.any(String),
+            photo_source: expect.any(String),
+            photo_link: expect.any(String),
+            available_item: expect.any(Boolean),
+          });
         });
       });
       test("200: responds with items which are available", async () => {
@@ -582,8 +678,12 @@ describe("/api/items", () => {
           user_id: expect.any(Number),
           name: expect.any(String),
           description: expect.any(String),
+          subcategory_id: expect.any(Number),
           price: expect.any(Number),
           date_listed: expect.any(String),
+          photo_description: expect.any(String),
+          photo_source: expect.any(String),
+          photo_link: expect.any(String),
           available_item: expect.any(Boolean),
         });
       });

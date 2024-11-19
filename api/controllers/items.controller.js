@@ -32,7 +32,7 @@ const postItem = async (request, response, next) => {
   const { user_id } = request.params;
   const { body } = request;
   try {
-    await strictGreenlist(["name", "description", "price"], Object.keys(body));
+    await strictGreenlist(["name", "description", "price", "tag", "subcategory_id", "photo_description", "photo_source", "photo_link"], Object.keys(body));
     await fetchUserByID(user_id);
     const item = await insertItem(user_id, body);
     response.status(201).send({ item });
@@ -61,7 +61,6 @@ const getUserItems = async (request, response, next) => {
         const items = await fetchUserItems(user_id);
         response.status(200).send({ items });
       } catch (error) {
-        console.log(error)
         next(error);
       }
 }

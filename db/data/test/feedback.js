@@ -1,39 +1,58 @@
-const feedback = [
+export default [
   {
-    seller: "tech_guru92",
-    buyer: "vintage_collect",
-    rating: 5,
-    comment: "Great transaction, very fast shipping!",
-    date_left: "2023-05-20",
+    "seller": "Savage_Hunter",
+    "buyer": "DestroyerX_1",
+    "rating": 3,
+    "comment": "The build integrity is fair and has all the basics, a decent choice overall.",
+    "date_left": "2017-08-06"
   },
   {
-    seller: "gadget_fanatic",
-    buyer: "bookworm_88",
-    rating: 4,
-    comment: "Item as described, but shipping took longer than expected",
-    date_left: "2023-08-01",
+    "seller": "DestroyerX_1",
+    "buyer": "SpectralWitchhunter_",
+    "rating": 2,
+    "comment": "The features offered was okay, but it still felt poorly made and has issues.",
+    "date_left": "2018-09-25"
   },
   {
-    seller: "furniture_world",
-    buyer: "kitchen_queen",
-    rating: 5,
-    comment: "Sofa was delivered in perfect condition, very satisfied",
-    date_left: "2023-09-05",
+    "seller": "DominantMaverickJ2",
+    "buyer": "StealthGladiatorG7",
+    "rating": 5,
+    "comment": "This speed is absolutely one-of-a-kind and exceeds all expectations, nothing like I’ve seen before.",
+    "date_left": "2022-05-30"
   },
   {
-    seller: "clothing_fanatic",
-    buyer: "car_parts_shop",
-    rating: 4,
-    comment: "T-shirt was great, but a little small",
-    date_left: "2023-07-15",
+    "seller": "FuryL@",
+    "buyer": "DominantMaverickJ2",
+    "rating": 3,
+    "comment": "Overall, the quality is nothing special and functions properly.",
+    "date_left": "2018-05-03"
   },
   {
-    seller: "artistic_expressions",
-    buyer: "tech_guru92",
-    rating: 5,
-    comment: "Love the art piece, exactly what I wanted!",
-    date_left: "2023-06-30",
+    "seller": "FuryL@",
+    "buyer": "AstralA4Reckoner",
+    "rating": 3,
+    "comment": "The usability level is decent, and while it has room for improvement, I was satisfied.",
+    "date_left": "2019-06-19"
   },
-];
-
-export default feedback
+  {
+    "seller": "FuryL@",
+    "buyer": "AstralA4Reckoner",
+    "rating": 4,
+    "comment": "The speed exceeded my expectations. It’s user-friendly and is top-tier.",
+    "date_left": "2021-10-13"
+  },
+  {
+    "seller": "SpectralWitchhunter_",
+    "buyer": "StealthGladiatorG7",
+    "rating": 4,
+    "comment": "The functionality level is stable and it delivers as promised very well. I’m satisfied.",
+    "date_left": "2021-01-27"
+  },
+  {
+    "seller": "StealthGladiatorG7",
+    "buyer": "Savage_Hunter",
+    "rating": 5,
+    "comment": "I’m thoroughly impressed with the value, it’s unmatched and delivers perfection.",
+    "date_left": "2021-07-22"
+  },
+]

@@ -1,65 +1,58 @@
-const users = [
+export default [
   {
-    username: "tech_guru92",
-    name: "John Doe",
-    date_registered: "2022-05-14",
-    balance: 12050,
+    "username": "Mighty-Slayer",
+    "name": "Jack Jackson",
+    "avatar_url": "https://randomuser.me/api/portraits/men/34.jpg",
+    "date_registered": "2013-09-11",
+    "balance": 78900
   },
   {
-    username: "vintage_collect",
-    name: "Alice Smith",
-    date_registered: "2021-11-30",
-    balance: 25000,
+    "username": "Savage_Hunter",
+    "name": "Freddie Zhang",
+    "avatar_url": "https://randomuser.me/api/portraits/men/54.jpg",
+    "date_registered": "2015-05-25",
+    "balance": 45500
   },
   {
-    username: "gadget_fanatic",
-    name: "Evan Cooper",
-    date_registered: "2023-03-21",
-    balance: 7575,
+    "username": "StealthGladiatorG7",
+    "name": "Jacob Pierce",
+    "avatar_url": "https://randomuser.me/api/portraits/men/74.jpg",
+    "date_registered": "2015-07-21",
+    "balance": 5500
   },
   {
-    username: "bookworm_88",
-    name: "Emily Davis",
-    date_registered: "2020-07-10",
-    balance: 6320,
+    "username": "SpectralWitchhunter_",
+    "name": "Iris Grant",
+    "avatar_url": "https://randomuser.me/api/portraits/women/82.jpg",
+    "date_registered": "2012-06-05",
+    "balance": 5700
   },
   {
-    username: "furniture_world",
-    name: "Michael Johnson",
-    date_registered: "2022-08-19",
-    balance: 50000,
+    "username": "DestroyerX_1",
+    "name": "Amelia Olsen",
+    "avatar_url": "https://randomuser.me/api/portraits/women/7.jpg",
+    "date_registered": "2016-05-03",
+    "balance": 71200
   },
   {
-    username: "kitchen_queen",
-    name: "Sophia Williams",
-    date_registered: "2021-10-03",
-    balance: 15000,
+    "username": "FuryL@",
+    "name": "Emma Evans",
+    "avatar_url": "https://randomuser.me/api/portraits/women/86.jpg",
+    "date_registered": "2013-12-21",
+    "balance": 85400
   },
   {
-    username: "clothing_fanatic",
-    name: "Rachel Green",
-    date_registered: "2023-01-25",
-    balance: 8000,
+    "username": "DominantMaverickJ2",
+    "name": "Gavin Olson",
+    "avatar_url": "https://randomuser.me/api/portraits/men/74.jpg",
+    "date_registered": "2013-02-12",
+    "balance": 86700
   },
   {
-    username: "car_parts_shop",
-    name: "David Martinez",
-    date_registered: "2020-12-12",
-    balance: 20000,
+    "username": "AstralA4Reckoner",
+    "name": "Paul Pierce",
+    "avatar_url": "https://randomuser.me/api/portraits/men/50.jpg",
+    "date_registered": "2015-01-08",
+    "balance": 92300
   },
-  {
-    username: "sports_gear_expert",
-    name: "Daniel Lee",
-    date_registered: "2023-04-17",
-    balance: 13000,
-  },
-  {
-    username: "artistic_expressions",
-    name: "Olivia Brown",
-    date_registered: "2022-06-30",
-    balance: 35000,
-  },
-];
-
-
-export default users
+]

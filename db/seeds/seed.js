@@ -2,12 +2,14 @@ import format from "pg-format";
 import db from "../connection.js";
 import { createRef, convertDateToTimestamp } from "./seed-utils.js";
 
-const seed = async ({ users, items, feedback }) => {
+const seed = async ({ users, items, feedback, categories }) => {
   await db.query("DROP SEQUENCE IF EXISTS items_id_seq CASCADE;");
   await db.query("DROP SEQUENCE IF EXISTS users_id_seq CASCADE;");
   await db.query("DROP TABLE IF EXISTS feedback;");
 
   await db.query("DROP TABLE IF EXISTS items;");
+  await db.query("DROP TABLE IF EXISTS subcategories");
+  await db.query("DROP TABLE IF EXISTS categories");
   await db.query("DROP TABLE IF EXISTS users;");
 
   await db.query(`
@@ -19,16 +21,33 @@ const seed = async ({ users, items, feedback }) => {
                   ,date_registered TIMESTAMP DEFAULT NOW()
                   ,balance INTEGER DEFAULT 0
                   );`);
-
+  await db.query(`
+                  CREATE TABLE categories (
+                  id SERIAL PRIMARY KEY
+                  ,category_name VARCHAR NOT NULL
+                  );`);
+  await db.query(`
+                  CREATE TABLE subcategories (
+                  id SERIAL PRIMARY KEY
+                  ,category_id INT NOT NULL
+                  ,subcategory_name VARCHAR NOT NULL
+                  ,FOREIGN KEY(category_id) REFERENCES categories(id)
+                  );`);
   await db.query(`
                   CREATE TABLE items (
                   id SERIAL PRIMARY KEY
                   ,user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
                   ,name VARCHAR NOT NULL
                   ,description VARCHAR NOT NULL
+                  ,tag VARCHAR NOT NULL
+                  ,subcategory_id INT NOT NULL
                   ,price INT NOT NULL
                   ,date_listed TIMESTAMP DEFAULT NOW()
+                  ,photo_description VARCHAR
+                  ,photo_source VARCHAR
+                  ,photo_link VARCHAR
                   ,available_item BOOLEAN DEFAULT TRUE
+                  ,FOREIGN KEY(subcategory_id) REFERENCES subcategories(id)
                   );`);
 
   await db.query(`
@@ -48,7 +67,6 @@ const seed = async ({ users, items, feedback }) => {
       return [username, name, convertDateToTimestamp(date_registered), balance];
     }
   );
-
   const insertIntoUsersQuery = format(
     `INSERT INTO users (
                   username
@@ -64,17 +82,60 @@ const seed = async ({ users, items, feedback }) => {
 
   const userData = await db.query(insertIntoUsersQuery);
 
+  const categoriesQueryData = categories.map((category) => {
+    return [category.name];
+  });
+  const insertIntoCategoriesQuery = format(
+    `INSERT INTO categories (
+                  category_name
+                  )  
+            VALUES %L
+            RETURNING * 
+  ;`,
+    categoriesQueryData
+  );
+
+  const categoryData = await db.query(insertIntoCategoriesQuery)
+
+  const categoryIdLookup = createRef(categoryData.rows, "category_name", "id")
+
+  const subcategoriesQueryData = categories.map(({name, subcategories}) => {
+    const category_id = categoryIdLookup[name]
+    return subcategories.map((subcategory) => {
+      return [category_id, subcategory]
+    })
+    
+  }).flat()
+  const insertIntoSubcategoriesQuery = format(
+    `INSERT INTO subcategories (
+                              category_id,
+                              subcategory_name
+                              )
+                        VALUES %L
+                        RETURNING *  
+    ;`,
+    subcategoriesQueryData
+  )
+
+  const subcategoriesData = await db.query(insertIntoSubcategoriesQuery)
+  const subcategoryIdLookup = createRef(subcategoriesData.rows, "subcategory_name", "id")
   const userIdLookup = createRef(userData.rows, "username", "id");
 
   const itemsQueryData = items.map(
-    ({ username, name, description, price, date_listed, available_item }) => {
+    ({ username, name, description, subcategory, tag, price, date_listed, photo: {alt_description, url, link}, available_item }) => {
       const user_id = userIdLookup[username];
+      const subcategory_id = subcategoryIdLookup[subcategory]
       return [
         user_id,
         name,
         description,
+        tag,
+        subcategory_id,
         price,
         convertDateToTimestamp(date_listed),
+        alt_description,
+        url,
+        link,
         available_item,
       ];
     }
@@ -85,8 +146,13 @@ const seed = async ({ users, items, feedback }) => {
                 user_id
                 ,name
                 ,description
+                ,tag
+                ,subcategory_id
                 ,price
                 ,date_listed
+                ,photo_description
+                ,photo_source
+                ,photo_link
                 ,available_item
                 ) 
             VALUES %L

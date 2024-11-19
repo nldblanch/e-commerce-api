@@ -19,13 +19,13 @@ const fetchItem = async (id) => {
     : Promise.reject({ code: 404, message: "item id not found" });
 };
 
-const insertItem = async (id, {name, description, price}) => {
+const insertItem = async (id, {name, description, tag, subcategory_id, price, photo_description, photo_source, photo_link}) => {
     const insertItemString = format(
         `
-          INSERT INTO items (user_id, name, description, price) 
+          INSERT INTO items (user_id, name, description, tag, subcategory_id, price, photo_description, photo_source, photo_link) 
           VALUES %L RETURNING *
           ;`,
-        [[id, name, description, price]]
+        [[id, name, description, tag, subcategory_id, price, photo_description, photo_source, photo_link]]
       );
       const { rows } = await db.query(insertItemString);
       const [data] = rows;
