@@ -1,3 +1,4 @@
+import { query } from "express";
 import { fetchCategoryFromSubcategory } from "../models/categories.model.js";
 import {
   fetchAllItems,
@@ -11,11 +12,22 @@ import greenlist from "../utils/greenlist.js";
 import strictGreenlist from "../utils/strictGreenlist.js";
 
 const getAllItems = async (request, response, next) => {
-  const queries = request.query;
+  const {query} = request;
+  const {sort_by, order} = query
   try {
-    const items = await fetchAllItems(queries);
+    if (sort_by) {
+      await greenlist(["name", "price", "date_listed"], [sort_by])
+    }
+    if (order) {
+      await greenlist(["asc", "desc"], [order])
+    }
+    const items = await fetchAllItems(query);
     response.status(200).send({ items });
   } catch (error) {
+    console.log(error)
+    if (error.message === "bad request - invalid key or value") {
+      error.message = "invalid query parameter"
+    }
     next(error);
   }
 };

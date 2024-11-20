@@ -1029,7 +1029,70 @@ describe("/api/items", () => {
             expect(message).toBe("no items found");
           });
         });
-        describe("?sort_by=", () => {});
+        describe("sort_by & order", () => {
+          describe("?sort_by=", () => {
+            test("200: sorts by name", async () => {
+              const {
+                body: { items },
+              } = await request(app).get("/api/items?sort_by=name").expect(200);
+              expect(items).toBeSortedBy("name", { ascending: true });
+            });
+            test("200: sorts by price", async () => {
+              const {
+                body: { items },
+              } = await request(app)
+                .get("/api/items?sort_by=price")
+                .expect(200);
+              expect(items).toBeSortedBy("price", { ascending: true });
+            });
+            test("200: sorts by date_listed", async () => {
+              const {
+                body: { items },
+              } = await request(app)
+                .get("/api/items?sort_by=date_listed")
+                .expect(200);
+              expect(items).toBeSortedBy("date_listed", { ascending: true });
+            });
+            test("400: bad request when invalid sort by parameter", async () => {
+              const {
+                body: { message },
+              } = await request(app)
+                .get("/api/items?sort_by=invalid_sort_by")
+                .expect(400);
+              expect(message).toBe("invalid query parameter");
+            });
+          });
+          describe("?order=", () => {
+            test("200: sorts ascending", async () => {
+              const {
+                body: { items },
+              } = await request(app).get("/api/items?order=asc").expect(200);
+              expect(items).toBeSortedBy("name", { ascending: true });
+            });
+            test("200: sorts descending", async () => {
+              const {
+                body: { items },
+              } = await request(app).get("/api/items?order=desc").expect(200);
+              expect(items).toBeSortedBy("name", { descending: true });
+            });
+            test("400: bad request when invalid order parameter", async () => {
+              const {
+                body: { message },
+              } = await request(app)
+                .get("/api/items?order=invalid_sort_by")
+                .expect(400);
+              expect(message).toBe("invalid query parameter");
+            });
+          });
+          describe("default", () => {
+            test("200: sorts by name, order ascending", async () => {
+              const {
+                body: { items },
+              } = await request(app).get("/api/items").expect(200);
+              expect(items).toBeSortedBy("name", { ascending: true });
+            });
+          });
+        });
         describe("?price", () => {
           describe("?price_from=", () => {
             test("200: respond with results greater than the price", async () => {

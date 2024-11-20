@@ -1,7 +1,7 @@
 import format from "pg-format";
 import db from "../../db/connection.js";
 
-const fetchAllItems = async ({ category, tag, price_from, price_to }) => {
+const fetchAllItems = async ({ category, tag, price_from, price_to, sort_by, order }) => {
   const queries = [];
   let queryNum = 0
   let queryString = `
@@ -19,12 +19,22 @@ const fetchAllItems = async ({ category, tag, price_from, price_to }) => {
     queries.push(("%" + tag + "%"));
   }
   if (price_from) {
-    queryString += `AND price >= $${++queryNum}`
+    queryString += `AND price >= $${++queryNum} `
     queries.push(price_from)
   }
   if (price_to) {
-    queryString += `AND price <= $${++queryNum}`
+    queryString += `AND price <= $${++queryNum} `
     queries.push(price_to)
+  }
+  if (sort_by) {
+    queryString += `ORDER BY ${sort_by} `
+  } else {
+    queryString += `ORDER BY name `
+  }
+  if (order) {
+    queryString += `${order} `
+  } else {
+    queryString += "ASC "
   }
   const { rows } = await db.query(queryString, queries);
   return rows.length > 0
