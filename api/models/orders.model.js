@@ -7,4 +7,9 @@ const fetchOrder = async (id) => {
   return data ? data : Promise.reject({ code: 404, message: "order id not found" });
 };
 
-export { fetchOrder };
+const fetchUserOrders = async (id) => {
+  const { rows } = await db.query(`SELECT * FROM orders WHERE buyer_id = $1;`, [id]);
+  return rows;
+};
+
+export { fetchOrder, fetchUserOrders };

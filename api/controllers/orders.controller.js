@@ -1,4 +1,5 @@
-import { fetchOrder } from "../models/orders.model.js";
+import { fetchOrder, fetchUserOrders } from "../models/orders.model.js";
+import { fetchUserByID } from "../models/users.model.js";
 
 const getOrderByID = async (request, response, next) => {
   const { order_id } = request.params;
@@ -10,4 +11,15 @@ const getOrderByID = async (request, response, next) => {
   }
 };
 
-export { getOrderByID };
+const getUserOrders = async (request, response, next) => {
+  const { user_id } = request.params;
+  try {
+    await fetchUserByID(user_id);
+    const orders = await fetchUserOrders(user_id);
+    response.status(200).send({ orders });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { getOrderByID, getUserOrders };

@@ -316,6 +316,53 @@ describe("/api/users", () => {
       });
     });
   });
+
+  describe("/users/:user_id/orders", () => {
+    describe("GET - all orders a user has made", () => {
+      test("200: responds with an array of orders", async () => {
+        const {
+          body: { orders },
+        } = await request(app).get("/api/users/1/orders").expect(200);
+        expect(orders.length).toBeGreaterThan(0);
+        orders.forEach((order) => {
+          expect(order).toMatchObject({
+            id: expect.any(Number),
+            buyer_id: 1,
+            seller_id: expect.any(Number),
+            item_id: expect.any(Number),
+            pending_order: expect.any(Boolean),
+            pending_feedback: expect.any(Boolean),
+            date_ordered: expect.any(String),
+          });
+        });
+      });
+      test("200: successful response when no orders found but user exists", async () => {
+        const userData = { username: "nldblanch", name: "Nathan Blanch" };
+        const {
+          body: { user },
+        } = await request(app).post("/api/users").send(userData).expect(201);
+
+        const {
+          body: { orders },
+        } = await request(app).get(`/api/users/${user.id}/orders`).expect(200);
+        expect(orders.length).toBe(0);
+        expect(orders).toEqual([]);
+      });
+      test("400: bad request - when given non number id", async () => {
+        const {
+          body: { message },
+        } = await request(app).get(`/api/users/something/orders`).expect(400);
+        expect(message).toBe("bad request - invalid id");
+      });
+      test("404: not found when user id doesn't exist", async () => {
+        const {
+          body: { message },
+        } = await request(app).get(`/api/users/9000/orders`).expect(404);
+        expect(message).toBe("user id not found");
+      });
+    });
+  });
+
   describe("/users/:user_id/items/:item_id", () => {
     describe("PATCH - update your item info", () => {
       test("200: can update item name", async () => {
