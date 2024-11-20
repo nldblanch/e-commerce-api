@@ -4,5 +4,4 @@ import feedback from "./feedback.js";
 import categories from "./categories.js";
 const data = { users, items, feedback, categories };
 
-
 export default data;

@@ -18,8 +18,7 @@ export default [
   {
     username: "Savage_Hunter",
     name: "cotton, slim-fit hoodie",
-    description:
-      "Made to withstand everyday wear and tear while keeping kids comfortable.",
+    description: "Made to withstand everyday wear and tear while keeping kids comfortable.",
     category: "clothing_and_accessories",
     subcategory: "kids_clothing",
     tag: "hoodie",
@@ -35,8 +34,7 @@ export default [
   {
     username: "StealthGladiatorG7",
     name: "moisturizing, deep-cleansing cream",
-    description:
-      "A luxurious mask that deep-cleanses and detoxifies your skin.",
+    description: "A luxurious mask that deep-cleanses and detoxifies your skin.",
     category: "beauty_and_personal_care",
     subcategory: "skincare",
     tag: "cream",
@@ -100,8 +98,7 @@ export default [
   {
     username: "FuryL@",
     name: "poseable wand",
-    description:
-      "Fun for all ages, these figures are a must-have for any collection.",
+    description: "Fun for all ages, these figures are a must-have for any collection.",
     category: "toys_and_games",
     subcategory: "action_figures_and_dolls",
     tag: "wand",
@@ -126,42 +123,40 @@ export default [
     available_item: true,
     photo: {
       description: "A person using a laptop computer on a table",
-      url:
-        "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-      link:
-        "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+      url: "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+      link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
     },
   },
   {
     username: "FuryL@",
-    "name": "snorkel",
-    "description": "High-performance gear for water sports enthusiasts.",
-    "category": "sports_and_outdoors",
-    "subcategory": "water_sports",
-    "tag": "snorkel",
-    "price": 24500,
-    "date_listed": "2022-12-21",
-    "available_item": true,
-    "photo": {
-      "description": "man wearing black goggles under water",
-      "url": "https://images.unsplash.com/photo-1499242249421-ac7daa30e504?ixid=M3w2NzYxNTl8MHwxfHNlYXJjaHwxfHxzbm9ya2VsfGVufDB8fHx8MTczMTg1ODI5OXww&ixlib=rb-4.0.3",
-      "link": "https://unsplash.com/photos/man-wearing-black-goggles-under-water-DjWUpXHVOhI"
-    }
+    name: "snorkel",
+    description: "High-performance gear for water sports enthusiasts.",
+    category: "sports_and_outdoors",
+    subcategory: "water_sports",
+    tag: "snorkel",
+    price: 24500,
+    date_listed: "2022-12-21",
+    available_item: true,
+    photo: {
+      description: "man wearing black goggles under water",
+      url: "https://images.unsplash.com/photo-1499242249421-ac7daa30e504?ixid=M3w2NzYxNTl8MHwxfHNlYXJjaHwxfHxzbm9ya2VsfGVufDB8fHx8MTczMTg1ODI5OXww&ixlib=rb-4.0.3",
+      link: "https://unsplash.com/photos/man-wearing-black-goggles-under-water-DjWUpXHVOhI",
+    },
   },
   {
     username: "Mighty-Slayer",
-    "name": "protector",
-    "description": "Designed for both style and comfort.",
-    "category": "home_and_living",
-    "subcategory": "bedding_and_linens",
-    "tag": "protector",
-    "price": 12100,
-    "date_listed": "2023-06-19",
-    "available_item": true,
-    "photo": {
-      "description": "brown short coated dog with black leather collar",
-      "url": "https://images.unsplash.com/photo-1619066572922-e6f368f7c796?ixid=M3w2NzYxNTl8MHwxfHNlYXJjaHwxfHxwcm90ZWN0b3J8ZW58MHx8fHwxNzMxOTI1Njc0fDA&ixlib=rb-4.0.3",
-      "link": "https://unsplash.com/photos/brown-short-coated-dog-with-black-leather-collar-JOkyNx7FXrw"
-    }
+    name: "protector",
+    description: "Designed for both style and comfort.",
+    category: "home_and_living",
+    subcategory: "bedding_and_linens",
+    tag: "protector",
+    price: 12100,
+    date_listed: "2023-06-19",
+    available_item: true,
+    photo: {
+      description: "brown short coated dog with black leather collar",
+      url: "https://images.unsplash.com/photo-1619066572922-e6f368f7c796?ixid=M3w2NzYxNTl8MHwxfHNlYXJjaHwxfHxwcm90ZWN0b3J8ZW58MHx8fHwxNzMxOTI1Njc0fDA&ixlib=rb-4.0.3",
+      link: "https://unsplash.com/photos/brown-short-coated-dog-with-black-leather-collar-JOkyNx7FXrw",
+    },
   },
 ];
