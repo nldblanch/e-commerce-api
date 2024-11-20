@@ -850,6 +850,8 @@ describe("/api/items", () => {
             user_id: expect.any(Number),
             name: expect.any(String),
             description: expect.any(String),
+            tag: expect.any(String),
+            category_id: expect.any(Number),
             subcategory_id: expect.any(Number),
             price: expect.any(Number),
             date_listed: expect.any(String),
@@ -920,8 +922,7 @@ describe("/api/items", () => {
               .get("/api/items?category=home_and_living")
               .expect(200);
             const [{ id }] = categories.filter(
-              (category) =>
-                category.category_name === "home_and_living"
+              (category) => category.category_name === "home_and_living"
             );
             items.forEach((item) => {
               expect(item).toMatchObject({
@@ -939,10 +940,9 @@ describe("/api/items", () => {
               .get("/api/items?category=electronics_and_gadgets")
               .expect(200);
             const [{ id }] = categories.filter(
-              (category) =>
-                category.category_name === "electronics_and_gadgets"
+              (category) => category.category_name === "electronics_and_gadgets"
             );
-            expect(items.length).toBeGreaterThan(0)
+            expect(items.length).toBeGreaterThan(0);
             items.forEach((item) => {
               expect(item).toMatchObject({
                 category_id: id,
@@ -959,8 +959,7 @@ describe("/api/items", () => {
               .get("/api/items?category=food_and_beverages")
               .expect(200);
             const [{ id }] = categories.filter(
-              (category) =>
-                category.category_name === "food_and_beverages"
+              (category) => category.category_name === "food_and_beverages"
             );
             items.forEach((item) => {
               expect(item).toMatchObject({
@@ -978,8 +977,7 @@ describe("/api/items", () => {
               .get("/api/items?category=toys_and_games")
               .expect(200);
             const [{ id }] = categories.filter(
-              (category) =>
-                category.category_name === "toys_and_games"
+              (category) => category.category_name === "toys_and_games"
             );
             items.forEach((item) => {
               expect(item).toMatchObject({
@@ -997,8 +995,7 @@ describe("/api/items", () => {
               .get("/api/items?category=sports_and_outdoors")
               .expect(200);
             const [{ id }] = categories.filter(
-              (category) =>
-                category.category_name === "sports_and_outdoors"
+              (category) => category.category_name === "sports_and_outdoors"
             );
             items.forEach((item) => {
               expect(item).toMatchObject({
@@ -1007,37 +1004,34 @@ describe("/api/items", () => {
             });
           });
         });
+        describe("?subcategory=", () => {});
         describe("?tag=", () => {
           test("200: respond with all results matching search term", async () => {
             const {
               body: { items: items1 },
-            } = await request(app)
-              .get("/api/items?tag=laptop")
-              .expect(200);
-            items1.forEach(({tag: itemTag}) => {
-              expect(itemTag.includes("laptop")).toBe(true)
+            } = await request(app).get("/api/items?tag=laptop").expect(200);
+            items1.forEach(({ tag: itemTag }) => {
+              expect(itemTag.includes("laptop")).toBe(true);
             });
             const {
               body: { items: items2 },
-            } = await request(app)
-              .get("/api/items?tag=nuts")
-              .expect(200);
+            } = await request(app).get("/api/items?tag=nuts").expect(200);
             items2.forEach((item) => {
               expect(item).toMatchObject({
-                tag: "nuts"
+                tag: "nuts",
               });
             });
           });
           test("404: responds not found when tag doesn't exist", async () => {
             const {
               body: { message },
-            } = await request(app)
-              .get("/api/items?tag=nathan")
-              .expect(404);
-            expect(message).toBe("no items found")
-            
+            } = await request(app).get("/api/items?tag=nathan").expect(404);
+            expect(message).toBe("no items found");
           });
         });
+        describe("?sort_by=", () => {});
+        describe("?price_from=", () => {});
+        describe("?price_to=", () => {});
       });
     });
   });
@@ -1053,6 +1047,8 @@ describe("/api/items", () => {
           user_id: expect.any(Number),
           name: expect.any(String),
           description: expect.any(String),
+          tag: expect.any(String),
+          category_id: expect.any(Number),
           subcategory_id: expect.any(Number),
           price: expect.any(Number),
           date_listed: expect.any(String),
