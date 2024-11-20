@@ -165,7 +165,7 @@ const insertItems = async (items, userIdLookup, categoryIdLookup, subcategoryIdL
       tag,
       price,
       date_listed,
-      photo: { alt_description, url, link },
+      photo: { description: photo_description, url, link },
       available_item,
     }) => {
       const user_id = userIdLookup[username];
@@ -180,7 +180,7 @@ const insertItems = async (items, userIdLookup, categoryIdLookup, subcategoryIdL
         subcategory_id,
         price,
         convertDateToTimestamp(date_listed),
-        alt_description,
+        photo_description,
         url,
         link,
         available_item,
