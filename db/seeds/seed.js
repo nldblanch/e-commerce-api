@@ -2,7 +2,7 @@ import format from "pg-format";
 import db from "../connection.js";
 import { createRef, convertDateToTimestamp } from "./seed-utils.js";
 
-const seed = async ({ users, items, feedback, categories }) => {
+const seed = async ({ users, items, feedback, categories, orders }) => {
   await dropTables();
   await createTables();
 
@@ -14,24 +14,20 @@ const seed = async ({ users, items, feedback, categories }) => {
 
   const categoryIdLookup = createRef(categoryData.rows, "category_name", "id");
 
-  const subcategoriesData = await insertSubcategories(
-    categories,
-    categoryIdLookup
-  );
+  const subcategoriesData = await insertSubcategories(categories, categoryIdLookup);
 
-  const subcategoryIdLookup = createRef(
-    subcategoriesData.rows,
-    "subcategory_name",
-    "id"
-  );
+  const subcategoryIdLookup = createRef(subcategoriesData.rows, "subcategory_name", "id");
 
   await insertItems(items, userIdLookup, categoryIdLookup, subcategoryIdLookup);
+
+  await insertOrders(orders);
 
   await insertFeedback(feedback, userIdLookup);
 };
 
 const dropTables = async () => {
   await db.query("DROP TABLE IF EXISTS feedback;");
+  await db.query("DROP TABLE IF EXISTS orders");
   await db.query("DROP TABLE IF EXISTS items;");
   await db.query("DROP TABLE IF EXISTS subcategories");
   await db.query("DROP TABLE IF EXISTS categories");
@@ -78,26 +74,40 @@ const createTables = async () => {
       ,FOREIGN KEY(category_id) REFERENCES categories(id)
       ,FOREIGN KEY(subcategory_id) REFERENCES subcategories(id)
       );`);
-
+  await db.query(`
+    CREATE TABLE orders (
+      id SERIAL PRIMARY KEY
+      ,buyer_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
+      ,seller_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
+      ,item_id INT NOT NULL REFERENCES items(id) ON DELETE CASCADE
+      ,pending_order BOOLEAN DEFAULT TRUE
+      ,pending_feedback BOOLEAN DEFAULT FALSE
+      ,date_ordered TIMESTAMP DEFAULT NOW()
+      ,FOREIGN KEY(buyer_id) REFERENCES users(id)
+      ,FOREIGN KEY(seller_id) REFERENCES users(id)
+      ,FOREIGN KEY(item_id) REFERENCES items(id)
+      )
+    `);
   await db.query(`
       CREATE TABLE feedback (
-      seller_id INT NOT NULL,
-      buyer_id INT NOT NULL,
-      rating INT NOT NULL,
-      comment VARCHAR NOT NULL,
-      date_left TIMESTAMP DEFAULT NOW(),
-      FOREIGN KEY(seller_id) REFERENCES users(id) ON DELETE CASCADE,
-      FOREIGN KEY(buyer_id) REFERENCES users(id) ON DELETE CASCADE,
-      CONSTRAINT different_users CHECK (seller_id != buyer_id)
+      id SERIAL PRIMARY KEY
+      ,order_id INT NOT NULL
+      ,seller_id INT NOT NULL
+      ,buyer_id INT NOT NULL
+      ,rating INT NOT NULL
+      ,comment VARCHAR NOT NULL
+      ,date_left TIMESTAMP DEFAULT NOW()
+      ,FOREIGN KEY(order_id) REFERENCES orders(id) ON DELETE CASCADE
+      ,FOREIGN KEY(seller_id) REFERENCES users(id) ON DELETE CASCADE
+      ,FOREIGN KEY(buyer_id) REFERENCES users(id) ON DELETE CASCADE
+      ,CONSTRAINT different_users CHECK (seller_id != buyer_id)
       );`);
 };
 
 const insertUsers = async (users) => {
-  const usersQueryData = users.map(
-    ({ username, name, date_registered, balance }) => {
-      return [username, name, convertDateToTimestamp(date_registered), balance];
-    }
-  );
+  const usersQueryData = users.map(({ username, name, date_registered, balance }) => {
+    return [username, name, convertDateToTimestamp(date_registered), balance];
+  });
   const insertIntoUsersQuery = format(
     `INSERT INTO users (
                   username
@@ -211,25 +221,37 @@ const insertItems = async (items, userIdLookup, categoryIdLookup, subcategoryIdL
   return db.query(insertIntoItemsQuery);
 };
 
-const insertFeedback = async (feedback, userIdLookup) => {
-  const feedbackQueryData = feedback.map(
-    ({ seller, buyer, rating, comment, date_left }, i) => {
-      const seller_id = userIdLookup[seller];
-      const buyer_id = userIdLookup[buyer];
-      return [
-        seller_id,
-        buyer_id,
-        rating,
-        comment,
-        convertDateToTimestamp(date_left),
-      ];
-    }
+const insertOrders = async (orders) => {
+  const ordersQueryData = orders.map(({ buyer_id, seller_id, item_id }) => {
+    return [buyer_id, seller_id, item_id];
+  });
+  const insertIntoOrdersQuery = format(
+    `INSERT INTO orders (
+                  buyer_id
+                  ,seller_id
+                  ,item_id
+                  )  
+            VALUES %L
+            RETURNING * 
+  ;`,
+    ordersQueryData
   );
+
+  return db.query(insertIntoOrdersQuery);
+};
+
+const insertFeedback = async (feedback, userIdLookup) => {
+  const feedbackQueryData = feedback.map(({ seller, buyer, order_id, rating, comment, date_left }, i) => {
+    const seller_id = userIdLookup[seller];
+    const buyer_id = userIdLookup[buyer];
+    return [seller_id, buyer_id, order_id, rating, comment, convertDateToTimestamp(date_left)];
+  });
 
   const insertIntoFeedbackQuery = format(
     `INSERT INTO feedback (
                 seller_id
                 ,buyer_id
+                ,order_id
                 ,rating
                 ,comment
                 ,date_left

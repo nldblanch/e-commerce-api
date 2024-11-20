@@ -1147,3 +1147,5 @@ describe("/api/categories", () => {
     });
   });
 });
+
+describe("/api/orders", () => {});
