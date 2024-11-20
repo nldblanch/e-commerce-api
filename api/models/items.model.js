@@ -1,7 +1,7 @@
 import format from "pg-format";
 import db from "../../db/connection.js";
 
-const fetchAllItems = async ({ category, tag }) => {
+const fetchAllItems = async ({ category, tag, price_from, price_to }) => {
   const queries = [];
   let queryNum = 0
   let queryString = `
@@ -17,6 +17,14 @@ const fetchAllItems = async ({ category, tag }) => {
   if (tag) {
     queryString += `AND tag LIKE $${++queryNum} `;
     queries.push(("%" + tag + "%"));
+  }
+  if (price_from) {
+    queryString += `AND price >= $${++queryNum}`
+    queries.push(price_from)
+  }
+  if (price_to) {
+    queryString += `AND price <= $${++queryNum}`
+    queries.push(price_to)
   }
   const { rows } = await db.query(queryString, queries);
   return rows.length > 0

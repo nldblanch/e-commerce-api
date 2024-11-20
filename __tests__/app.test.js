@@ -1030,8 +1030,63 @@ describe("/api/items", () => {
           });
         });
         describe("?sort_by=", () => {});
-        describe("?price_from=", () => {});
-        describe("?price_to=", () => {});
+        describe("?price", () => {
+          describe("?price_from=", () => {
+            test("200: respond with results greater than the price", async () => {
+              const {
+                body: { items: items1 },
+              } = await request(app).get("/api/items?price_from=2000").expect(200);
+              items1.forEach(({ price }) => {
+                expect(price).not.toBeLessThan(2000);
+              });
+              const {
+                body: { items: items2 },
+              } = await request(app).get("/api/items?price_from=20000").expect(200);
+              items2.forEach(({ price }) => {
+                expect(price).not.toBeLessThan(20000);
+              });
+            });
+            test("404: responds not found when no items found", async () => {
+              const {
+                body: { message },
+              } = await request(app).get("/api/items?price_from=20000000").expect(404);
+              expect(message).toBe("no items found");
+            });
+          })
+          describe("?price_to=", () => {
+            test("200: respond with results less than the price", async () => {
+              const {
+                body: { items: items1 },
+              } = await request(app).get("/api/items?price_to=2000").expect(200);
+              items1.forEach(({ price }) => {
+                expect(price).not.toBeGreaterThan(2000);
+              });
+              const {
+                body: { items: items2 },
+              } = await request(app).get("/api/items?price_to=20000").expect(200);
+              items2.forEach(({ price }) => {
+                expect(price).not.toBeGreaterThan(20000);
+              });
+            });
+            test("404: responds not found when no items found", async () => {
+              const {
+                body: { message },
+              } = await request(app).get("/api/items?price_to=0").expect(404);
+              expect(message).toBe("no items found");
+            });
+          });
+          describe("?price_from=&price_to=", () => {
+            test("200: respond with results in the given price range", async () => {
+              const {
+                body: { items },
+              } = await request(app).get("/api/items?price_from=10000&price_to=15000").expect(200);
+              items.forEach(({ price }) => {
+                expect(price).not.toBeGreaterThan(15000);
+                expect(price).not.toBeLessThan(10000);
+              });
+            });
+          })
+        });
       });
     });
   });
