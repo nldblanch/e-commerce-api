@@ -13,12 +13,16 @@ const fetchAllItems = async ({ category, subcategory, tag, price_from, price_to,
     ON subcategories.category_id = categories.id
     WHERE available_item = TRUE `;
   if (category) {
-    queryString += Number(category) ? `AND items.category_id = $${++queryNum} ` : `AND category_name = $${++queryNum} `;
+    queryString += Number(category) ? `AND categories.id = $${++queryNum} ` : `AND category_name = $${++queryNum} `;
     queries.push(category);
   }
   if (subcategory) {
-    queryString += `AND subcategory_name = $${++queryNum} `;
+    console.log(subcategory);
+    queryString += Number(subcategory)
+      ? `AND subcategories.id = $${++queryNum} `
+      : `AND subcategory_name = $${++queryNum} `;
     queries.push(subcategory);
+    console.log(queryString);
   }
   if (tag) {
     queryString += `AND tag LIKE $${++queryNum} `;

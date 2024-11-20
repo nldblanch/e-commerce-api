@@ -901,6 +901,23 @@ describe("/api/items", () => {
               });
             });
           });
+          test("200: subcategory parameter can also take number value representing id", async () => {
+            const {
+              body: { items },
+            } = await request(app).get("/api/items?subcategory=3").expect(200);
+            console.log(items);
+            items.forEach((item) => {
+              expect(item).toMatchObject({
+                subcategory_id: 3,
+              });
+            });
+          });
+          test("404: subcategory doesn't exist", async () => {
+            const {
+              body: { message },
+            } = await request(app).get("/api/items?subcategory=1000").expect(404);
+            expect(message).toBe("no items found");
+          });
         });
         describe("?tag=", () => {
           test("200: respond with all results matching search term", async () => {
