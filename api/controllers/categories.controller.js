@@ -1,4 +1,4 @@
-import { fetchAllCategories, fetchSubcategories } from "../models/categories.model";
+import { fetchAllCategories, fetchSubcategories } from "../models/categories.model.js";
 
 const getAllCategories = async (request, response, next) => {
   try {
