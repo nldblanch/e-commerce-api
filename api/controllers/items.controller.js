@@ -1,4 +1,3 @@
-import { query } from "express";
 import { fetchCategoryFromSubcategory } from "../models/categories.model.js";
 import {
   fetchAllItems,
