@@ -16,6 +16,7 @@ const getAllItems = async (request, response, next) => {
     const items = await fetchAllItems(queries);
     response.status(200).send({ items });
   } catch (error) {
+    console.log(error)
     next(error);
   }
 };

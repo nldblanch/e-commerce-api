@@ -942,6 +942,7 @@ describe("/api/items", () => {
               (category) =>
                 category.category_name === "electronics_and_gadgets"
             );
+            expect(items.length).toBeGreaterThan(0)
             items.forEach((item) => {
               expect(item).toMatchObject({
                 category_id: id,
@@ -1004,6 +1005,37 @@ describe("/api/items", () => {
                 category_id: id,
               });
             });
+          });
+        });
+        describe("?tag=", () => {
+          test("200: respond with all results matching search term", async () => {
+            const {
+              body: { items: items1 },
+            } = await request(app)
+              .get("/api/items?tag=laptop")
+              .expect(200);
+            items1.forEach(({tag: itemTag}) => {
+              expect(itemTag.includes("laptop")).toBe(true)
+            });
+            const {
+              body: { items: items2 },
+            } = await request(app)
+              .get("/api/items?tag=nuts")
+              .expect(200);
+            items2.forEach((item) => {
+              expect(item).toMatchObject({
+                tag: "nuts"
+              });
+            });
+          });
+          test("404: responds not found when tag doesn't exist", async () => {
+            const {
+              body: { message },
+            } = await request(app)
+              .get("/api/items?tag=nathan")
+              .expect(404);
+            expect(message).toBe("no items found")
+            
           });
         });
       });

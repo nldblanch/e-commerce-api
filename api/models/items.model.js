@@ -1,8 +1,9 @@
 import format from "pg-format";
 import db from "../../db/connection.js";
 
-const fetchAllItems = async ({ category }) => {
+const fetchAllItems = async ({ category, tag }) => {
   const queries = [];
+  let queryNum = 0
   let queryString = `
     SELECT items.*, categories.id AS category_id 
     FROM items 
@@ -10,11 +11,18 @@ const fetchAllItems = async ({ category }) => {
     ON items.category_id = categories.id 
     WHERE available_item = TRUE `;
   if (category) {
-    queryString += `AND category_name = $1`;
+    queryString += `AND category_name = $${++queryNum} `;
     queries.push(category);
   }
+  if (tag) {
+    queryString += `AND tag LIKE $${++queryNum} `;
+    queries.push(("%" + tag + "%"));
+  }
   const { rows } = await db.query(queryString, queries);
-  return rows;
+  return rows.length > 0
+    ? rows
+    : Promise.reject({ code: 404, message: "no items found" });
+
 };
 
 const fetchItem = async (id) => {
