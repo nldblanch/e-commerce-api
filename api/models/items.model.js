@@ -17,12 +17,10 @@ const fetchAllItems = async ({ category, subcategory, tag, price_from, price_to,
     queries.push(category);
   }
   if (subcategory) {
-    console.log(subcategory);
     queryString += Number(subcategory)
       ? `AND subcategories.id = $${++queryNum} `
       : `AND subcategory_name = $${++queryNum} `;
     queries.push(subcategory);
-    console.log(queryString);
   }
   if (tag) {
     queryString += `AND tag LIKE $${++queryNum} `;

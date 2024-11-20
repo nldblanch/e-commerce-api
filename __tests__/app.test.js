@@ -905,7 +905,6 @@ describe("/api/items", () => {
             const {
               body: { items },
             } = await request(app).get("/api/items?subcategory=3").expect(200);
-            console.log(items);
             items.forEach((item) => {
               expect(item).toMatchObject({
                 subcategory_id: 3,
