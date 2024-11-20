@@ -1148,4 +1148,37 @@ describe("/api/categories", () => {
   });
 });
 
-describe("/api/orders", () => {});
+describe("/api/orders", () => {
+  describe("/orders/:order_id", () => {
+    describe("GET: a specific order by id", () => {
+      test("200: responds with order matching the given id", async () => {
+        const {
+          body: { order },
+        } = await request(app).get("/api/orders/1").expect(200);
+        expect(order).toMatchObject({
+          id: 1,
+          buyer_id: expect.any(Number),
+          seller_id: expect.any(Number),
+          item_id: expect.any(Number),
+          pending_order: expect.any(Boolean),
+          pending_feedback: expect.any(Boolean),
+          date_ordered: expect.any(String),
+        });
+      });
+      test("400: responds with bad request when given non number", async () => {
+        const {
+          body: { message },
+        } = await request(app).get("/api/orders/error").expect(400);
+
+        expect(message).toBe("bad request - invalid id");
+      });
+      test("404: responds with not found when order doesn't exist", async () => {
+        const {
+          body: { message },
+        } = await request(app).get("/api/orders/9000").expect(404);
+
+        expect(message).toBe("order id not found");
+      });
+    });
+  });
+});
