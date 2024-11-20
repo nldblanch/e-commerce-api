@@ -24,7 +24,6 @@ const getAllItems = async (request, response, next) => {
     const items = await fetchAllItems(query);
     response.status(200).send({ items });
   } catch (error) {
-    console.log(error)
     if (error.message === "bad request - invalid key or value") {
       error.message = "invalid query parameter"
     }
