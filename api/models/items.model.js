@@ -13,7 +13,7 @@ const fetchAllItems = async ({ category, subcategory, tag, price_from, price_to,
     ON subcategories.category_id = categories.id
     WHERE available_item = TRUE `;
   if (category) {
-    queryString += `AND category_name = $${++queryNum} `;
+    queryString += Number(category) ? `AND items.category_id = $${++queryNum} ` : `AND category_name = $${++queryNum} `;
     queries.push(category);
   }
   if (subcategory) {
