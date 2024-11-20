@@ -61,10 +61,9 @@ describe("/api/users", () => {
       });
       test("409: responds with conflict when username already taken", async () => {
         const userData = { username: "nldblanch", name: "Nathan Blanch" };
-        const { body: {user} } = await request(app)
-          .post("/api/users")
-          .send(userData)
-          .expect(201);
+        const {
+          body: { user },
+        } = await request(app).post("/api/users").send(userData).expect(201);
         expect(user).toMatchObject(userData);
         const {
           body: { message },
@@ -115,10 +114,7 @@ describe("/api/users", () => {
         const patchData = { username: "tech_guru99" };
         const {
           body: { user },
-        } = await request(app)
-          .patch("/api/users/1")
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch("/api/users/1").send(patchData).expect(200);
         expect(user).toMatchObject({
           username: "tech_guru99",
           id: 1,
@@ -128,10 +124,7 @@ describe("/api/users", () => {
         const patchData = { name: "Nathan" };
         const {
           body: { user },
-        } = await request(app)
-          .patch("/api/users/1")
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch("/api/users/1").send(patchData).expect(200);
         expect(user).toMatchObject({
           name: "Nathan",
           id: 1,
@@ -141,10 +134,7 @@ describe("/api/users", () => {
         const patchData = { avatar_url: "https://www.example.com" };
         const {
           body: { user },
-        } = await request(app)
-          .patch("/api/users/1")
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch("/api/users/1").send(patchData).expect(200);
         expect(user).toMatchObject({
           avatar_url: "https://www.example.com",
           id: 1,
@@ -154,10 +144,7 @@ describe("/api/users", () => {
         const patchData = { balance: 20057 };
         const {
           body: { user },
-        } = await request(app)
-          .patch("/api/users/1")
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch("/api/users/1").send(patchData).expect(200);
         expect(user).toMatchObject({
           balance: 20057,
           id: 1,
@@ -172,10 +159,7 @@ describe("/api/users", () => {
         };
         const {
           body: { user },
-        } = await request(app)
-          .patch("/api/users/1")
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch("/api/users/1").send(patchData).expect(200);
         expect(user).toMatchObject({
           id: 1,
           username: "tech_guru99",
@@ -188,30 +172,21 @@ describe("/api/users", () => {
         const patchData = {};
         const {
           body: { message },
-        } = await request(app)
-          .patch("/api/users/1")
-          .send(patchData)
-          .expect(400);
+        } = await request(app).patch("/api/users/1").send(patchData).expect(400);
         expect(message).toBe("bad request - no patch data");
       });
       test("400: patch info has invalid keys", async () => {
         const patchData = { nam: "Nathan" };
         const {
           body: { message },
-        } = await request(app)
-          .patch("/api/users/1")
-          .send(patchData)
-          .expect(400);
+        } = await request(app).patch("/api/users/1").send(patchData).expect(400);
         expect(message).toBe("bad request - invalid key or value");
       });
       test("404: user id not found", async () => {
         const patchData = { name: "Nathan" };
         const {
           body: { message },
-        } = await request(app)
-          .patch("/api/users/9000")
-          .send(patchData)
-          .expect(404);
+        } = await request(app).patch("/api/users/9000").send(patchData).expect(404);
         expect(message).toBe("user id not found");
       });
     });
@@ -276,16 +251,12 @@ describe("/api/users", () => {
           photo_description: "A person using a laptop computer on a table",
           photo_source:
             "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-          photo_link:
-            "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+          photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
         };
 
         const {
           body: { item },
-        } = await request(app)
-          .post("/api/users/1/items")
-          .send(itemData)
-          .expect(201);
+        } = await request(app).post("/api/users/1/items").send(itemData).expect(201);
         expect(item).toMatchObject(itemData);
         expect(item).toMatchObject({
           id: expect.any(Number),
@@ -304,10 +275,7 @@ describe("/api/users", () => {
         };
         const {
           body: { message },
-        } = await request(app)
-          .post("/api/users/1/items")
-          .send(itemData)
-          .expect(400);
+        } = await request(app).post("/api/users/1/items").send(itemData).expect(400);
         expect(message).toBe("bad request - missing key");
       });
       test("400: request body has invalid keys", async () => {
@@ -321,15 +289,11 @@ describe("/api/users", () => {
           photo_description: "A person using a laptop computer on a table",
           photo_source:
             "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-          photo_link:
-            "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+          photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
         };
         const {
           body: { message },
-        } = await request(app)
-          .post("/api/users/1/items")
-          .send(itemData)
-          .expect(400);
+        } = await request(app).post("/api/users/1/items").send(itemData).expect(400);
         expect(message).toBe("bad request - invalid key or value");
       });
       test("404: throws error when user id does not exist", async () => {
@@ -343,15 +307,11 @@ describe("/api/users", () => {
           photo_description: "A person using a laptop computer on a table",
           photo_source:
             "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-          photo_link:
-            "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+          photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
         };
         const {
           body: { message },
-        } = await request(app)
-          .post("/api/users/9000/items")
-          .send(itemData)
-          .expect(404);
+        } = await request(app).post("/api/users/9000/items").send(itemData).expect(404);
         expect(message).toBe("user id not found");
       });
     });
@@ -373,8 +333,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -382,10 +341,7 @@ describe("/api/users", () => {
 
         const {
           body: { item },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
       test("200: can update item description", async () => {
@@ -403,22 +359,17 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
         const patchData = {
-          description:
-            "Brand new only just taken out of the box but wrong colour",
+          description: "Brand new only just taken out of the box but wrong colour",
         };
 
         const {
           body: { item },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
       test("200: can update item price", async () => {
@@ -436,8 +387,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -445,10 +395,7 @@ describe("/api/users", () => {
 
         const {
           body: { item },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
       test("200: can update item tag", async () => {
@@ -466,8 +413,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -475,10 +421,7 @@ describe("/api/users", () => {
 
         const {
           body: { item },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
       test("200: can update item photo description", async () => {
@@ -496,8 +439,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -505,10 +447,7 @@ describe("/api/users", () => {
 
         const {
           body: { item },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
       test("200: can update item photo source", async () => {
@@ -526,8 +465,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -538,10 +476,7 @@ describe("/api/users", () => {
 
         const {
           body: { item },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
       test("200: can update item photo link", async () => {
@@ -559,22 +494,17 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
         const patchData = {
-          photo_link:
-            "https://unsplash.com/photos/a-person-sitting-at-a-table-with-a-laptop-and-a-mouse-Tnm-287tzHQ",
+          photo_link: "https://unsplash.com/photos/a-person-sitting-at-a-table-with-a-laptop-and-a-mouse-Tnm-287tzHQ",
         };
 
         const {
           body: { item },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
       test("200: can update item subcategory", async () => {
@@ -592,8 +522,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -603,10 +532,7 @@ describe("/api/users", () => {
 
         const {
           body: { item },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
       test("200: updating item subcategory updates main category", async () => {
@@ -624,8 +550,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -635,10 +560,7 @@ describe("/api/users", () => {
 
         const {
           body: { item },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({
           ...macbook,
           ...patchData,
@@ -660,24 +582,19 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
         const patchData = {
           name: "NEW Macbook",
-          description:
-            "Brand new only just taken out of the box but wrong colour",
+          description: "Brand new only just taken out of the box but wrong colour",
           price: 40000,
         };
 
         const {
           body: { item },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(200);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
       test("400: patch info missing keys", async () => {
@@ -695,8 +612,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -704,10 +620,7 @@ describe("/api/users", () => {
 
         const {
           body: { message },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(400);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(400);
         expect(message).toBe("bad request - no patch data");
       });
       test("400: patch info has invalid keys", async () => {
@@ -725,8 +638,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -734,10 +646,7 @@ describe("/api/users", () => {
 
         const {
           body: { message },
-        } = await request(app)
-          .patch(`/api/users/1/items/${macbook.id}`)
-          .send(patchData)
-          .expect(400);
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(400);
         expect(message).toBe("bad request - invalid key or value");
       });
       test("404: user id not found", async () => {
@@ -755,8 +664,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -764,10 +672,7 @@ describe("/api/users", () => {
 
         const {
           body: { message },
-        } = await request(app)
-          .patch(`/api/users/9000/items/${macbook.id}`)
-          .send(patchData)
-          .expect(404);
+        } = await request(app).patch(`/api/users/9000/items/${macbook.id}`).send(patchData).expect(404);
         expect(message).toBe("user id not found");
       });
       test("404: item id not found", async () => {
@@ -785,8 +690,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -794,10 +698,7 @@ describe("/api/users", () => {
 
         const {
           body: { message },
-        } = await request(app)
-          .patch(`/api/users/1/items/9000`)
-          .send(patchData)
-          .expect(404);
+        } = await request(app).patch(`/api/users/1/items/9000`).send(patchData).expect(404);
         expect(message).toBe("item id not found");
       });
       test("403: user id does not match item user", async () => {
@@ -815,8 +716,7 @@ describe("/api/users", () => {
             photo_description: "A person using a laptop computer on a table",
             photo_source:
               "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-            photo_link:
-              "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
+            photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
           })
           .expect(201);
 
@@ -824,13 +724,8 @@ describe("/api/users", () => {
 
         const {
           body: { message },
-        } = await request(app)
-          .patch(`/api/users/2/items/${macbook.id}`)
-          .send(patchData)
-          .expect(403);
-        expect(message).toBe(
-          "user id does not match user id associated with item"
-        );
+        } = await request(app).patch(`/api/users/2/items/${macbook.id}`).send(patchData).expect(403);
+        expect(message).toBe("user id does not match user id associated with item");
       });
     });
   });
@@ -880,13 +775,8 @@ describe("/api/items", () => {
             } = await request(app).get("/api/categories");
             const {
               body: { items },
-            } = await request(app)
-              .get("/api/items?category=clothing_and_accessories")
-              .expect(200);
-            const [{ id }] = categories.filter(
-              (category) =>
-                category.category_name === "clothing_and_accessories"
-            );
+            } = await request(app).get("/api/items?category=clothing_and_accessories").expect(200);
+            const [{ id }] = categories.filter((category) => category.category_name === "clothing_and_accessories");
             items.forEach((item) => {
               expect(item).toMatchObject({
                 category_id: id,
@@ -899,13 +789,8 @@ describe("/api/items", () => {
             } = await request(app).get("/api/categories");
             const {
               body: { items },
-            } = await request(app)
-              .get("/api/items?category=beauty_and_personal_care")
-              .expect(200);
-            const [{ id }] = categories.filter(
-              (category) =>
-                category.category_name === "beauty_and_personal_care"
-            );
+            } = await request(app).get("/api/items?category=beauty_and_personal_care").expect(200);
+            const [{ id }] = categories.filter((category) => category.category_name === "beauty_and_personal_care");
             items.forEach((item) => {
               expect(item).toMatchObject({
                 category_id: id,
@@ -918,12 +803,8 @@ describe("/api/items", () => {
             } = await request(app).get("/api/categories");
             const {
               body: { items },
-            } = await request(app)
-              .get("/api/items?category=home_and_living")
-              .expect(200);
-            const [{ id }] = categories.filter(
-              (category) => category.category_name === "home_and_living"
-            );
+            } = await request(app).get("/api/items?category=home_and_living").expect(200);
+            const [{ id }] = categories.filter((category) => category.category_name === "home_and_living");
             items.forEach((item) => {
               expect(item).toMatchObject({
                 category_id: id,
@@ -936,12 +817,8 @@ describe("/api/items", () => {
             } = await request(app).get("/api/categories");
             const {
               body: { items },
-            } = await request(app)
-              .get("/api/items?category=electronics_and_gadgets")
-              .expect(200);
-            const [{ id }] = categories.filter(
-              (category) => category.category_name === "electronics_and_gadgets"
-            );
+            } = await request(app).get("/api/items?category=electronics_and_gadgets").expect(200);
+            const [{ id }] = categories.filter((category) => category.category_name === "electronics_and_gadgets");
             expect(items.length).toBeGreaterThan(0);
             items.forEach((item) => {
               expect(item).toMatchObject({
@@ -955,12 +832,8 @@ describe("/api/items", () => {
             } = await request(app).get("/api/categories");
             const {
               body: { items },
-            } = await request(app)
-              .get("/api/items?category=food_and_beverages")
-              .expect(200);
-            const [{ id }] = categories.filter(
-              (category) => category.category_name === "food_and_beverages"
-            );
+            } = await request(app).get("/api/items?category=food_and_beverages").expect(200);
+            const [{ id }] = categories.filter((category) => category.category_name === "food_and_beverages");
             items.forEach((item) => {
               expect(item).toMatchObject({
                 category_id: id,
@@ -973,12 +846,8 @@ describe("/api/items", () => {
             } = await request(app).get("/api/categories");
             const {
               body: { items },
-            } = await request(app)
-              .get("/api/items?category=toys_and_games")
-              .expect(200);
-            const [{ id }] = categories.filter(
-              (category) => category.category_name === "toys_and_games"
-            );
+            } = await request(app).get("/api/items?category=toys_and_games").expect(200);
+            const [{ id }] = categories.filter((category) => category.category_name === "toys_and_games");
             items.forEach((item) => {
               expect(item).toMatchObject({
                 category_id: id,
@@ -991,12 +860,8 @@ describe("/api/items", () => {
             } = await request(app).get("/api/categories");
             const {
               body: { items },
-            } = await request(app)
-              .get("/api/items?category=sports_and_outdoors")
-              .expect(200);
-            const [{ id }] = categories.filter(
-              (category) => category.category_name === "sports_and_outdoors"
-            );
+            } = await request(app).get("/api/items?category=sports_and_outdoors").expect(200);
+            const [{ id }] = categories.filter((category) => category.category_name === "sports_and_outdoors");
             items.forEach((item) => {
               expect(item).toMatchObject({
                 category_id: id,
@@ -1004,7 +869,23 @@ describe("/api/items", () => {
             });
           });
         });
-        describe("?subcategory=", () => {});
+        describe("?subcategory=", () => {
+          test("200: can filter by subcategory", async () => {
+            const {
+              body: { subcategories },
+            } = await request(app).get("/api/categories/1");
+
+            const {
+              body: { items },
+            } = await request(app).get("/api/items?subcategory=kids_clothing").expect(200);
+            const [{ id }] = subcategories.filter((subcategory) => subcategory.subcategory_name === "kids_clothing");
+            items.forEach((item) => {
+              expect(item).toMatchObject({
+                subcategory_id: id,
+              });
+            });
+          });
+        });
         describe("?tag=", () => {
           test("200: respond with all results matching search term", async () => {
             const {
@@ -1040,25 +921,19 @@ describe("/api/items", () => {
             test("200: sorts by price", async () => {
               const {
                 body: { items },
-              } = await request(app)
-                .get("/api/items?sort_by=price")
-                .expect(200);
+              } = await request(app).get("/api/items?sort_by=price").expect(200);
               expect(items).toBeSortedBy("price", { ascending: true });
             });
             test("200: sorts by date_listed", async () => {
               const {
                 body: { items },
-              } = await request(app)
-                .get("/api/items?sort_by=date_listed")
-                .expect(200);
+              } = await request(app).get("/api/items?sort_by=date_listed").expect(200);
               expect(items).toBeSortedBy("date_listed", { ascending: true });
             });
             test("400: bad request when invalid sort by parameter", async () => {
               const {
                 body: { message },
-              } = await request(app)
-                .get("/api/items?sort_by=invalid_sort_by")
-                .expect(400);
+              } = await request(app).get("/api/items?sort_by=invalid_sort_by").expect(400);
               expect(message).toBe("invalid query parameter");
             });
           });
@@ -1078,9 +953,7 @@ describe("/api/items", () => {
             test("400: bad request when invalid order parameter", async () => {
               const {
                 body: { message },
-              } = await request(app)
-                .get("/api/items?order=invalid_sort_by")
-                .expect(400);
+              } = await request(app).get("/api/items?order=invalid_sort_by").expect(400);
               expect(message).toBe("invalid query parameter");
             });
           });
@@ -1115,7 +988,7 @@ describe("/api/items", () => {
               } = await request(app).get("/api/items?price_from=20000000").expect(404);
               expect(message).toBe("no items found");
             });
-          })
+          });
           describe("?price_to=", () => {
             test("200: respond with results less than the price", async () => {
               const {
@@ -1148,7 +1021,7 @@ describe("/api/items", () => {
                 expect(price).not.toBeLessThan(10000);
               });
             });
-          })
+          });
         });
       });
     });

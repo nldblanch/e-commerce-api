@@ -1,91 +1,68 @@
 import format from "pg-format";
 import db from "../../db/connection.js";
 
-const fetchAllItems = async ({ category, tag, price_from, price_to, sort_by, order }) => {
+const fetchAllItems = async ({ category, subcategory, tag, price_from, price_to, sort_by, order }) => {
   const queries = [];
-  let queryNum = 0
+  let queryNum = 0;
   let queryString = `
-    SELECT items.*, categories.id AS category_id 
+    SELECT items.*, categories.id AS category_id, subcategories.id AS subcategory_id 
     FROM items 
     LEFT JOIN categories 
     ON items.category_id = categories.id 
+    LEFT JOIN subcategories
+    ON subcategories.category_id = categories.id
     WHERE available_item = TRUE `;
   if (category) {
     queryString += `AND category_name = $${++queryNum} `;
     queries.push(category);
   }
+  if (subcategory) {
+    queryString += `AND subcategory_name = $${++queryNum} `;
+    queries.push(subcategory);
+  }
   if (tag) {
     queryString += `AND tag LIKE $${++queryNum} `;
-    queries.push(("%" + tag + "%"));
+    queries.push("%" + tag + "%");
   }
   if (price_from) {
-    queryString += `AND price >= $${++queryNum} `
-    queries.push(price_from)
+    queryString += `AND price >= $${++queryNum} `;
+    queries.push(price_from);
   }
   if (price_to) {
-    queryString += `AND price <= $${++queryNum} `
-    queries.push(price_to)
+    queryString += `AND price <= $${++queryNum} `;
+    queries.push(price_to);
   }
   if (sort_by) {
-    queryString += `ORDER BY ${sort_by} `
+    queryString += `ORDER BY ${sort_by} `;
   } else {
-    queryString += `ORDER BY name `
+    queryString += `ORDER BY name `;
   }
   if (order) {
-    queryString += `${order} `
+    queryString += `${order} `;
   } else {
-    queryString += "ASC "
+    queryString += "ASC ";
   }
   const { rows } = await db.query(queryString, queries);
-  return rows.length > 0
-    ? rows
-    : Promise.reject({ code: 404, message: "no items found" });
-
+  return rows.length > 0 ? rows : Promise.reject({ code: 404, message: "no items found" });
 };
 
 const fetchItem = async (id) => {
-  if (!Number(id))
-    return Promise.reject({ code: 400, message: "bad request - invalid id" });
+  if (!Number(id)) return Promise.reject({ code: 400, message: "bad request - invalid id" });
   const { rows } = await db.query(`SELECT * FROM items WHERE id = $1 ;`, [id]);
   const [data] = rows;
-  return data
-    ? data
-    : Promise.reject({ code: 404, message: "item id not found" });
+  return data ? data : Promise.reject({ code: 404, message: "item id not found" });
 };
 
 const insertItem = async (
   id,
-  {
-    name,
-    description,
-    tag,
-    category_id,
-    subcategory_id,
-    price,
-    photo_description,
-    photo_source,
-    photo_link,
-  }
+  { name, description, tag, category_id, subcategory_id, price, photo_description, photo_source, photo_link }
 ) => {
   const insertItemString = format(
     `
           INSERT INTO items (user_id, name, description, tag, category_id, subcategory_id, price, photo_description, photo_source, photo_link) 
           VALUES %L RETURNING *
           ;`,
-    [
-      [
-        id,
-        name,
-        description,
-        tag,
-        category_id,
-        subcategory_id,
-        price,
-        photo_description,
-        photo_source,
-        photo_link,
-      ],
-    ]
+    [[id, name, description, tag, category_id, subcategory_id, price, photo_description, photo_source, photo_link]]
   );
   const { rows } = await db.query(insertItemString);
   const [data] = rows;
@@ -116,14 +93,12 @@ const updateItem = async (user_id, item_id, entries) => {
   queryString += `WHERE id = $${values.length + 1} RETURNING * `;
   const { rows } = await db.query(queryString, [...values, item_id]);
   const [data] = rows;
-  return data
-    ? data
-    : Promise.reject({ code: 404, message: "item id not found" });
+  return data ? data : Promise.reject({ code: 404, message: "item id not found" });
 };
 
 const fetchUserItems = async (id) => {
-    const { rows } = await db.query(`SELECT * FROM items WHERE user_id = $1;`, [id]);
-    return rows;
-}
+  const { rows } = await db.query(`SELECT * FROM items WHERE user_id = $1;`, [id]);
+  return rows;
+};
 
 export { fetchAllItems, fetchItem, insertItem, updateItem, fetchUserItems };
