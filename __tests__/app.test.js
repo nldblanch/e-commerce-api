@@ -827,6 +827,89 @@ describe("/api/users", () => {
       });
     });
   });
+
+  describe("/users/:user_id/orders/order_id", () => {
+    describe("PATCH: update the order", () => {
+      test("200: can update order status", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+
+        const patchData = { pending_order: false };
+
+        const {
+          body: { order: updatedOrder },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send(patchData).expect(200);
+        expect(updatedOrder).toMatchObject({ ...order, ...updatedOrder });
+      });
+      test("400: patch info missing key", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+
+        const patchData = {};
+
+        const {
+          body: { message },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send(patchData).expect(400);
+        expect(message).toBe("bad request - missing key");
+      });
+      test("400: patch info has invalid key", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+
+        const patchData = { pending: false };
+
+        const {
+          body: { message },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send(patchData).expect(400);
+        expect(message).toBe("bad request - invalid key or value");
+      });
+      test("404: user id not found", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+
+        const patchData = { pending_order: false };
+
+        const {
+          body: { message },
+        } = await request(app).patch(`/api/users/9000/orders/${order.id}`).send(patchData).expect(404);
+        expect(message).toBe("user id not found");
+      });
+      test("404: order id not found", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+
+        const patchData = { pending_order: false };
+
+        const {
+          body: { message },
+        } = await request(app).patch(`/api/users/1/orders/9000`).send(patchData).expect(404);
+        expect(message).toBe("order id not found");
+      });
+      test("403: user id does not match order user", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+
+        const patchData = { pending_order: false };
+
+        const {
+          body: { message },
+        } = await request(app).patch(`/api/users/2/orders/${order.id}`).send(patchData).expect(403);
+        expect(message).toBe("user id does not match user id associated with order");
+      });
+    });
+  });
 });
 
 describe("/api/items", () => {

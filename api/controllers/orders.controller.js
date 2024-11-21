@@ -1,6 +1,7 @@
 import { fetchItem } from "../models/items.model.js";
-import { fetchOrder, fetchUserOrders, insertOrder } from "../models/orders.model.js";
+import { fetchOrder, fetchUserOrders, insertOrder, updateOrder } from "../models/orders.model.js";
 import { fetchUserByID } from "../models/users.model.js";
+import greenlist from "../utils/greenlist.js";
 import strictGreenlist from "../utils/strictGreenlist.js";
 
 const getOrderByID = async (request, response, next) => {
@@ -40,4 +41,19 @@ const postOrder = async (request, response, next) => {
   }
 };
 
-export { getOrderByID, getUserOrders, postOrder };
+const patchOrder = async (request, response, next) => {
+  const { user_id, order_id } = request.params;
+  const { body } = request;
+  try {
+    await strictGreenlist(["pending_order"], Object.keys(body));
+    await greenlist([true, false], Object.values(body));
+    await fetchUserByID(user_id);
+
+    const order = await updateOrder(user_id, order_id, Object.values(body));
+    response.status(200).send({ order });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { getOrderByID, getUserOrders, postOrder, patchOrder };
