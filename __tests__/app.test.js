@@ -361,6 +361,57 @@ describe("/api/users", () => {
         expect(message).toBe("user id not found");
       });
     });
+
+    describe("POST - buy an item by posting a new order", () => {
+      test("201: posts an item order to the database", async () => {
+        const orderData = { item_id: 1, seller_id: 1 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/2/orders").send(orderData).expect(201);
+        expect(order).toMatchObject({
+          id: expect.any(Number),
+          buyer_id: 2,
+          seller_id: 1,
+          item_id: 1,
+          pending_order: true,
+          pending_feedback: true,
+          date_ordered: expect.any(String),
+        });
+        const today = new Date();
+        const date_ordered = new Date(order.date_ordered);
+        expect(today.getUTCDate()).toBe(date_ordered.getUTCDate());
+      });
+
+      test("400: request body missing keys", async () => {
+        const orderData = { item_id: 1 };
+        const {
+          body: { message },
+        } = await request(app).post("/api/users/2/orders").send(orderData).expect(400);
+        expect(message).toBe("bad request - missing key");
+      });
+      test("400: request body has invalid keys", async () => {
+        const orderData = { item_id: 1, seller: 1 };
+        const {
+          body: { message },
+        } = await request(app).post("/api/users/2/orders").send(orderData).expect(400);
+        expect(message).toBe("bad request - invalid key or value");
+      });
+      test("404: throws error when user id does not exist", async () => {
+        const orderData = { item_id: 1, seller_id: 1 };
+        const {
+          body: { message },
+        } = await request(app).post("/api/users/9000/orders").send(orderData).expect(404);
+
+        expect(message).toBe("user id not found");
+      });
+      test("409: responds with a conflict when seller associated with item does not match the seller id", async () => {
+        const orderData = { item_id: 1, seller_id: 2 };
+        const {
+          body: { message },
+        } = await request(app).post("/api/users/2/orders").send(orderData).expect(409);
+        expect(message).toBe("conflict - seller id does not match item seller id");
+      });
+    });
   });
 
   describe("/users/:user_id/items/:item_id", () => {

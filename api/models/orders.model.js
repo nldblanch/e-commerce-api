@@ -1,3 +1,4 @@
+import format from "pg-format";
 import db from "../../db/connection.js";
 
 const fetchOrder = async (id) => {
@@ -12,4 +13,17 @@ const fetchUserOrders = async (id) => {
   return rows;
 };
 
-export { fetchOrder, fetchUserOrders };
+const insertOrder = async (buyer_id, { item_id, seller_id }) => {
+  const insertOrderString = format(
+    `
+              INSERT INTO orders (buyer_id, seller_id, item_id) 
+              VALUES %L RETURNING *
+              ;`,
+    [[buyer_id, seller_id, item_id]]
+  );
+  const { rows } = await db.query(insertOrderString);
+  const [data] = rows;
+  return data;
+};
+
+export { fetchOrder, fetchUserOrders, insertOrder };

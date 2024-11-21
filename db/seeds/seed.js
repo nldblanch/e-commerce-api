@@ -81,7 +81,7 @@ const createTables = async () => {
       ,seller_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
       ,item_id INT NOT NULL REFERENCES items(id) ON DELETE CASCADE
       ,pending_order BOOLEAN DEFAULT TRUE
-      ,pending_feedback BOOLEAN DEFAULT FALSE
+      ,pending_feedback BOOLEAN DEFAULT TRUE
       ,date_ordered TIMESTAMP DEFAULT NOW()
       ,FOREIGN KEY(buyer_id) REFERENCES users(id)
       ,FOREIGN KEY(seller_id) REFERENCES users(id)
