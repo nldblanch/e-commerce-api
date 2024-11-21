@@ -27,7 +27,6 @@ const getUserOrders = async (request, response, next) => {
 const postOrder = async (request, response, next) => {
   const { user_id } = request.params;
   const { body } = request;
-  console.log(body);
   try {
     await strictGreenlist(["item_id", "seller_id"], Object.keys(body));
     await fetchUserByID(user_id);
