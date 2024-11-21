@@ -103,9 +103,4 @@ const fetchUserItems = async (id) => {
   return rows;
 };
 
-const makeItemUnavailable = async (id) => {
-  const { rows } = await db.query(`UPDATE items SET available_item = FALSE WHERE id = $1 RETURNING *`, [id]);
-  return rows[0];
-};
-
-export { fetchAllItems, fetchItem, insertItem, updateItem, fetchUserItems, makeItemUnavailable };
+export { fetchAllItems, fetchItem, insertItem, updateItem, fetchUserItems };

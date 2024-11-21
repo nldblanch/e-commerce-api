@@ -1,4 +1,4 @@
-import { fetchItem, makeItemUnavailable } from "../models/items.model.js";
+import { fetchItem } from "../models/items.model.js";
 import { fetchOrder, fetchUserOrders, insertOrder, updateOrder } from "../models/orders.model.js";
 import { fetchUserByID } from "../models/users.model.js";
 import greenlist from "../utils/greenlist.js";
@@ -32,11 +32,14 @@ const postOrder = async (request, response, next) => {
     await strictGreenlist(["item_id", "seller_id"], Object.keys(body));
     await fetchUserByID(user_id);
     const item = await fetchItem(body.item_id);
-    if (item.user_id !== body.seller_id)
+    if (item.user_id !== body.seller_id) {
       next({ code: 409, message: "conflict - seller id does not match item seller id" });
-    const order = await insertOrder(user_id, body);
-    const updatedItem = await makeItemUnavailable(order.item_id);
-    response.status(201).send({ order, item: updatedItem });
+    } else if (!item.available_item) {
+      next({ code: 404, message: "item not available" });
+    } else {
+      const { order, updatedItem } = await insertOrder(user_id, body);
+      response.status(201).send({ order, item: updatedItem });
+    }
   } catch (error) {
     next(error);
   }

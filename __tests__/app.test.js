@@ -12,8 +12,8 @@ beforeEach(async () => {
   }
 });
 
-afterAll(async () => {
-  await db.end();
+afterAll(() => {
+  return db.end();
 });
 describe("/api", () => {
   test("200 GET: returns endpoints", async () => {
@@ -413,6 +413,25 @@ describe("/api/users", () => {
 
         expect(item).toMatchObject({ available_item: false });
       });
+      test("concurrent orders do not allow purchase of the item", async () => {
+        const orderData = { item_id: 1, seller_id: 1 };
+        const {
+          body: { order: purchase1 },
+        } = await request(app).post("/api/users/2/orders").send(orderData).expect(201);
+        const {
+          body: { message: purchase2 },
+        } = await request(app).post("/api/users/3/orders").send(orderData).expect(404);
+        expect(purchase1).toMatchObject({
+          id: expect.any(Number),
+          buyer_id: 2,
+          seller_id: 1,
+          item_id: 1,
+          pending_order: true,
+          pending_feedback: true,
+          date_ordered: expect.any(String),
+        });
+        expect(purchase2).toBe("item not available");
+      });
       test("400: request body missing keys", async () => {
         const orderData = { item_id: 1 };
         const {
@@ -434,6 +453,14 @@ describe("/api/users", () => {
         } = await request(app).post("/api/users/9000/orders").send(orderData).expect(404);
 
         expect(message).toBe("user id not found");
+      });
+      test("404: throws error when item not available", async () => {
+        const orderData = { item_id: 4, seller_id: 6 };
+        const {
+          body: { message },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(404);
+
+        expect(message).toBe("item not available");
       });
       test("409: responds with a conflict when seller associated with item does not match the seller id", async () => {
         const orderData = { item_id: 1, seller_id: 2 };

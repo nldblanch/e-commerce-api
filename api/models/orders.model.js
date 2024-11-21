@@ -14,6 +14,10 @@ const fetchUserOrders = async (id) => {
 };
 
 const insertOrder = async (buyer_id, { item_id, seller_id }) => {
+  await db.query(`BEGIN;`);
+
+  await db.query(`SELECT * FROM items WHERE id = $1 FOR UPDATE;`, [item_id]);
+
   const insertOrderString = format(
     `
               INSERT INTO orders (buyer_id, seller_id, item_id) 
@@ -21,9 +25,22 @@ const insertOrder = async (buyer_id, { item_id, seller_id }) => {
               ;`,
     [[buyer_id, seller_id, item_id]]
   );
-  const { rows } = await db.query(insertOrderString);
-  const [data] = rows;
-  return data;
+  const {
+    rows: [order],
+  } = await db.query(insertOrderString);
+
+  const {
+    rows: [updatedItem],
+  } = await db.query(
+    `
+      UPDATE items SET available_item = FALSE 
+      WHERE id = $1 AND available_item = TRUE RETURNING *;`,
+    [item_id]
+  );
+
+  await db.query(`COMMIT;`);
+
+  return { order, updatedItem };
 };
 
 const updateOrder = async (user_id, order_id, patchValue) => {
