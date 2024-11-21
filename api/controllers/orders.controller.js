@@ -37,7 +37,6 @@ const postOrder = async (request, response, next) => {
     const order = await insertOrder(user_id, body);
     response.status(201).send({ order });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
