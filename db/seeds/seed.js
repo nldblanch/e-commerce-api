@@ -59,7 +59,7 @@ const createTables = async () => {
   await db.query(`
       CREATE TABLE items (
       id SERIAL PRIMARY KEY
-      ,user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
+      ,user_id INT NOT NULL
       ,name VARCHAR NOT NULL
       ,description VARCHAR NOT NULL
       ,tag VARCHAR NOT NULL
@@ -71,21 +71,22 @@ const createTables = async () => {
       ,photo_source VARCHAR
       ,photo_link VARCHAR
       ,available_item BOOLEAN DEFAULT TRUE
-      ,FOREIGN KEY(category_id) REFERENCES categories(id)
-      ,FOREIGN KEY(subcategory_id) REFERENCES subcategories(id)
+      ,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+      ,FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE
+      ,FOREIGN KEY(subcategory_id) REFERENCES subcategories(id) ON DELETE CASCADE
       );`);
   await db.query(`
     CREATE TABLE orders (
       id SERIAL PRIMARY KEY
-      ,buyer_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
-      ,seller_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
-      ,item_id INT NOT NULL REFERENCES items(id) ON DELETE CASCADE
+      ,buyer_id INT NOT NULL
+      ,seller_id INT NOT NULL
+      ,item_id INT NOT NULL
       ,pending_order BOOLEAN DEFAULT TRUE
       ,pending_feedback BOOLEAN DEFAULT TRUE
       ,date_ordered TIMESTAMP DEFAULT NOW()
-      ,FOREIGN KEY(buyer_id) REFERENCES users(id)
-      ,FOREIGN KEY(seller_id) REFERENCES users(id)
-      ,FOREIGN KEY(item_id) REFERENCES items(id)
+      ,FOREIGN KEY(buyer_id) REFERENCES users(id) ON DELETE CASCADE
+      ,FOREIGN KEY(seller_id) REFERENCES users(id) ON DELETE CASCADE
+      ,FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE
       )
     `);
   await db.query(`

@@ -4,7 +4,7 @@
   "main": "listen.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
-    "test": "jest --verbose",
+    "test": "jest --verbose --runInBand",
     "prepare": "husky",
     "seed": "node ./db/seeds/run-seed.js",
     "start": "node ./api/listen.js",
