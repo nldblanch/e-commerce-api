@@ -1,4 +1,4 @@
-import { fetchItem } from "../models/items.model.js";
+import { fetchItem, makeItemUnavailable } from "../models/items.model.js";
 import { fetchOrder, fetchUserOrders, insertOrder, updateOrder } from "../models/orders.model.js";
 import { fetchUserByID } from "../models/users.model.js";
 import greenlist from "../utils/greenlist.js";
@@ -35,7 +35,8 @@ const postOrder = async (request, response, next) => {
     if (item.user_id !== body.seller_id)
       next({ code: 409, message: "conflict - seller id does not match item seller id" });
     const order = await insertOrder(user_id, body);
-    response.status(201).send({ order });
+    const updatedItem = await makeItemUnavailable(order.item_id);
+    response.status(201).send({ order, item: updatedItem });
   } catch (error) {
     next(error);
   }

@@ -381,7 +381,38 @@ describe("/api/users", () => {
         const date_ordered = new Date(order.date_ordered);
         expect(today.getUTCDate()).toBe(date_ordered.getUTCDate());
       });
+      test("201: posts an item order makes that item unavailable", async () => {
+        const orderData = { item_id: 1, seller_id: 1 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/2/orders").send(orderData).expect(201);
+        const {
+          body: { item },
+        } = await request(app).get("/api/items/1").expect(200);
+        expect(item).toMatchObject({
+          id: 1,
+          user_id: 1,
+          name: expect.any(String),
+          description: expect.any(String),
+          tag: expect.any(String),
+          category_id: expect.any(Number),
+          subcategory_id: expect.any(Number),
+          price: expect.any(Number),
+          date_listed: expect.any(String),
+          photo_description: expect.any(String),
+          photo_source: expect.any(String),
+          photo_link: expect.any(String),
+          available_item: false,
+        });
+      });
+      test("201: posting an item order also returns that item", async () => {
+        const orderData = { item_id: 1, seller_id: 1 };
+        const {
+          body: { item },
+        } = await request(app).post("/api/users/2/orders").send(orderData).expect(201);
 
+        expect(item).toMatchObject({ available_item: false });
+      });
       test("400: request body missing keys", async () => {
         const orderData = { item_id: 1 };
         const {
