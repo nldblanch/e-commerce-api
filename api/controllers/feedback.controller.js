@@ -2,8 +2,9 @@ import { fetchUserFeedback, fetchFeedbackByOrderID, insertFeedback } from "../mo
 
 const getUserFeedback = async (request, response, next) => {
   const { user_id } = request.params;
+  const { query } = request;
   try {
-    const feedback = await fetchUserFeedback(user_id);
+    const feedback = await fetchUserFeedback(user_id, query);
     response.status(200).send({ feedback });
   } catch (error) {
     next(error);

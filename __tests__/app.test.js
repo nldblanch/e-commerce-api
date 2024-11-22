@@ -548,6 +548,51 @@ describe("/api/users", () => {
         } = await request(app).get(`/api/users/9000/feedback`).expect(404);
         expect(message).toBe("user id not found");
       });
+
+      describe("?months=", () => {
+        test("200: responds with feedback from past n months", async () => {
+          const {
+            body: { feedback: initial },
+          } = await request(app).get("/api/users/6/feedback?months=12").expect(200);
+          expect(initial).toHaveLength(0);
+
+          const {
+            body: { order },
+          } = await request(app).post("/api/users/1/orders").send({ item_id: 6, seller_id: 6 }).expect(201);
+          await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+
+          const feedbackData = {
+            seller_id: 6,
+            buyer_id: 1,
+            rating: 5,
+            comment: "I love these shoes",
+          };
+          await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(201);
+
+          const {
+            body: { feedback },
+          } = await request(app).get("/api/users/6/feedback?months=12").expect(200);
+          expect(feedback).toHaveLength(1);
+
+          feedback.forEach((piece) => {
+            const { date_left } = piece;
+            const dateLeft = new Date(date_left);
+            const now = new Date();
+            const twelveMonthsAgo = new Date();
+            twelveMonthsAgo.setFullYear(now.getFullYear() - 1);
+            expect(dateLeft <= now).toBeTruthy();
+            expect(dateLeft >= twelveMonthsAgo).toBeTruthy();
+            expect(dateLeft < twelveMonthsAgo).toBeFalsy();
+          });
+        });
+
+        test("400: when non number given for query", async () => {
+          const {
+            body: { message },
+          } = await request(app).get("/api/users/6/feedback?months=twelve").expect(400);
+          expect(message).toBe("bad request - invalid id");
+        });
+      });
     });
   });
 

@@ -4,12 +4,25 @@ import { strictGreenlist } from "../utils/index.js";
 import { fetchOrder } from "./orders.model.js";
 import { fetchUserByID } from "./users.model.js";
 
-const fetchUserFeedback = async (id) => {
+const fetchUserFeedback = async (id, { months }) => {
   try {
+    const queries = [id];
+
     await fetchUserByID(id);
-    const { rows } = await db.query(`SELECT * FROM feedback WHERE seller_id = $1;`, [id]);
+    let queryString = `SELECT * FROM feedback WHERE seller_id = $1 `;
+    if (months) {
+      if (!Number(months)) return Promise.reject({ code: 400, message: "bad request - invalid id" });
+      const now = new Date();
+      const dateMonthsAgo = new Date(now);
+      dateMonthsAgo.setMonth(now.getMonth() - months);
+      queryString += "AND date_left >= $2 ";
+      queryString += "AND date_left <= $3 ";
+      queries.push(dateMonthsAgo, now);
+    }
+    const { rows } = await db.query(queryString, queries);
     return rows;
   } catch (error) {
+    console.log(error);
     return Promise.reject(error);
   }
 };
