@@ -1552,4 +1552,39 @@ describe("/api/orders", () => {
       });
     });
   });
+
+  describe("/orders/:order_id/feedback", () => {
+    describe("GET - the feedback a user gave after an order", () => {
+      test("200: responds with the feedback", async () => {
+        const {
+          body: { feedback },
+        } = await request(app).get("/api/orders/1/feedback");
+        expect(feedback).toMatchObject({
+          id: expect.any(Number),
+          seller_id: expect.any(Number),
+          buyer_id: expect.any(Number),
+          order_id: 1,
+          rating: expect.any(Number),
+          comment: expect.any(String),
+          date_left: expect.any(String),
+        });
+      });
+
+      test("400: responds with bad request when given non number", async () => {
+        const {
+          body: { message },
+        } = await request(app).get("/api/orders/error/feedback").expect(400);
+
+        expect(message).toBe("bad request - invalid id");
+      });
+
+      test("404: responds with not found when order doesn't exist", async () => {
+        const {
+          body: { message },
+        } = await request(app).get("/api/orders/9000/feedback").expect(404);
+
+        expect(message).toBe("order id not found");
+      });
+    });
+  });
 });
