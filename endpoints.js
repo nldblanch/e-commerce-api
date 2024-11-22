@@ -121,6 +121,7 @@ export default {
   "/users/:user_id/feedback": {
     GET: {
       description: "gets all feedback a user has been given",
+      queries: { months: "number" },
       exampleResponse: { feedback: ["example_feedback", "example_feedback"] },
     },
   },

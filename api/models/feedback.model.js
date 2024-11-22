@@ -22,7 +22,6 @@ const fetchUserFeedback = async (id, { months }) => {
     const { rows } = await db.query(queryString, queries);
     return rows;
   } catch (error) {
-    console.log(error);
     return Promise.reject(error);
   }
 };
