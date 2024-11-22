@@ -1,5 +1,7 @@
 import format from "pg-format";
 import db from "../../db/connection.js";
+import strictGreenlist from "../utils/strictGreenlist.js";
+import greenlist from "../utils/greenlist.js";
 
 const fetchUserByID = async (id) => {
   if (!Number(id)) return Promise.reject({ code: 400, message: "bad request - invalid id" });
@@ -8,7 +10,9 @@ const fetchUserByID = async (id) => {
   return data ? data : Promise.reject({ code: 404, message: "user id not found" });
 };
 
-const insertUser = async ({ username, name }) => {
+const insertUser = async (body) => {
+  await strictGreenlist(["username", "name"], Object.keys(body));
+  const [username, name] = Object.values(body);
   const insertUserString = format(
     `
       INSERT INTO users (username, name) 
@@ -21,7 +25,10 @@ const insertUser = async ({ username, name }) => {
   return data;
 };
 
-const updateUser = async (id, entries) => {
+const updateUser = async (id, body) => {
+  await greenlist(["username", "name", "avatar_url", "balance"], Object.keys(body));
+  const entries = Object.entries(body);
+
   if (entries.length < 1) return Promise.reject({ code: 400, message: "bad request - no patch data" });
 
   let queryString = `UPDATE users SET `;
