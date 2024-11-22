@@ -34,6 +34,15 @@ export default {
     category_id: 1,
     subcategory_name: "womens_clothing",
   },
+  example_feedback: {
+    id: 4,
+    order_id: 4,
+    seller_id: 6,
+    buyer_id: 7,
+    rating: 3,
+    comment: "Overall, the quality is nothing special and functions properly.",
+    date_left: "2018-05-02T23:00:00.000Z",
+  },
   "/api": {
     GET: {
       description: "serves up a json representation of all the available endpoints of the api",
@@ -107,6 +116,12 @@ export default {
       description: "posts a new order representing purchasing an item",
       format: { item_id: 1, seller_id: 1 },
       exampleResponse: { order: "example_order" },
+    },
+  },
+  "/users/:user_id/feedback": {
+    GET: {
+      description: "gets all feedback a user has been given",
+      exampleResponse: { feedback: ["example_feedback", "example_feedback"] },
     },
   },
   "/api/users/user_id/items/:item_id": {

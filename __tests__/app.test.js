@@ -471,7 +471,49 @@ describe("/api/users", () => {
       });
     });
   });
-
+  describe("/users/:user_id/feedback", () => {
+    describe("GET - all feedback on a user profile", () => {
+      test("200: responds with an array containing the feedback", async () => {
+        const {
+          body: { feedback },
+        } = await request(app).get("/api/users/6/feedback").expect(200);
+        expect(feedback).toHaveLength(3);
+        feedback.forEach((piece) => {
+          expect(piece).toMatchObject({
+            id: expect.any(Number),
+            seller_id: 6,
+            buyer_id: expect.any(Number),
+            order_id: expect.any(Number),
+            rating: expect.any(Number),
+            comment: expect.any(String),
+            date_left: expect.any(String),
+          });
+          expect(piece.rating).not.toBeGreaterThan(5);
+          expect(piece.rating).not.toBeLessThan(1);
+        });
+        console.log(feedback[0]);
+      });
+      test("200: successful response when no feedback found but user exists", async () => {
+        const {
+          body: { feedback },
+        } = await request(app).get("/api/users/1/feedback").expect(200);
+        expect(feedback).toHaveLength(0);
+        expect(feedback).toEqual([]);
+      });
+      test("400: bad request - when given non number id", async () => {
+        const {
+          body: { message },
+        } = await request(app).get(`/api/users/something/feedback`).expect(400);
+        expect(message).toBe("bad request - invalid id");
+      });
+      test("404: not found when user id doesn't exist", async () => {
+        const {
+          body: { message },
+        } = await request(app).get(`/api/users/9000/feedback`).expect(404);
+        expect(message).toBe("user id not found");
+      });
+    });
+  });
   describe("/users/:user_id/items/:item_id", () => {
     describe("PATCH - update your item info", () => {
       test("200: can update item name", async () => {
