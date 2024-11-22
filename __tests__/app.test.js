@@ -258,7 +258,6 @@ describe("/api/users", () => {
         expect(message).toBe("user id not found");
       });
     });
-
     describe("POST - add a new item", () => {
       test("201: adds item to database and returns that item", async () => {
         const itemData = {
