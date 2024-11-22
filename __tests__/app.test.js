@@ -15,6 +15,7 @@ beforeEach(async () => {
 afterAll(() => {
   return db.end();
 });
+
 describe("/api", () => {
   test("200 GET: returns endpoints", async () => {
     const {
@@ -45,6 +46,7 @@ describe("/api/users", () => {
         const dateRegistered = new Date(user.date_registered);
         expect(today.getUTCDate()).toBe(dateRegistered.getUTCDate());
       });
+
       test("400: request body missing keys", async () => {
         const userData = { name: "Nathan Blanch" };
         const {
@@ -52,6 +54,7 @@ describe("/api/users", () => {
         } = await request(app).post("/api/users").send(userData).expect(400);
         expect(message).toBe("bad request - missing key");
       });
+
       test("400: request body has invalid keys", async () => {
         const userData = { person: "nldblanch", name: "Nathan Blanch" };
         const {
@@ -59,6 +62,7 @@ describe("/api/users", () => {
         } = await request(app).post("/api/users").send(userData).expect(400);
         expect(message).toBe("bad request - invalid key or value");
       });
+
       test("409: responds with conflict when username already taken", async () => {
         const userData = { username: "nldblanch", name: "Nathan Blanch" };
         const {
@@ -72,6 +76,7 @@ describe("/api/users", () => {
       });
     });
   });
+
   describe("/users/:user_id", () => {
     describe("GET - get a user by their id", () => {
       test("200: responds with the user associated with the given id", async () => {
@@ -97,11 +102,13 @@ describe("/api/users", () => {
           balance: expect.any(Number),
         });
       });
+
       test("400: responds with bad request when given non number", async () => {
         const data = await request(app).get("/api/users/error").expect(400);
         const errorMessage = data.body.message;
         expect(errorMessage).toBe("bad request - invalid id");
       });
+
       test("404: responds with not found when user doesn't exist", async () => {
         const data = await request(app).get("/api/users/9000").expect(404);
 
@@ -109,6 +116,7 @@ describe("/api/users", () => {
         expect(errorMessage).toBe("user id not found");
       });
     });
+
     describe("PATCH - update your profile", () => {
       test("200: can update username", async () => {
         const patchData = { username: "tech_guru99" };
@@ -120,6 +128,7 @@ describe("/api/users", () => {
           id: 1,
         });
       });
+
       test("200: can update name", async () => {
         const patchData = { name: "Nathan" };
         const {
@@ -130,6 +139,7 @@ describe("/api/users", () => {
           id: 1,
         });
       });
+
       test("200: can update avatar", async () => {
         const patchData = { avatar_url: "https://www.example.com" };
         const {
@@ -140,6 +150,7 @@ describe("/api/users", () => {
           id: 1,
         });
       });
+
       test("200: can update balance", async () => {
         const patchData = { balance: 20057 };
         const {
@@ -150,6 +161,7 @@ describe("/api/users", () => {
           id: 1,
         });
       });
+
       test("200: can update multiple values at once", async () => {
         const patchData = {
           username: "tech_guru99",
@@ -168,6 +180,7 @@ describe("/api/users", () => {
           balance: 200000,
         });
       });
+
       test("400: patch info missing keys", async () => {
         const patchData = {};
         const {
@@ -175,6 +188,7 @@ describe("/api/users", () => {
         } = await request(app).patch("/api/users/1").send(patchData).expect(400);
         expect(message).toBe("bad request - no patch data");
       });
+
       test("400: patch info has invalid keys", async () => {
         const patchData = { nam: "Nathan" };
         const {
@@ -182,6 +196,7 @@ describe("/api/users", () => {
         } = await request(app).patch("/api/users/1").send(patchData).expect(400);
         expect(message).toBe("bad request - invalid key or value");
       });
+
       test("404: user id not found", async () => {
         const patchData = { name: "Nathan" };
         const {
@@ -191,6 +206,7 @@ describe("/api/users", () => {
       });
     });
   });
+
   describe("/users/:user_id/items", () => {
     describe("GET - all items associated with a user", () => {
       test("200: responds with an array of items", async () => {
@@ -214,6 +230,7 @@ describe("/api/users", () => {
           });
         });
       });
+
       test("200: successful response when no items found but user exists", async () => {
         const userData = { username: "nldblanch", name: "Nathan Blanch" };
         const {
@@ -226,12 +243,14 @@ describe("/api/users", () => {
         expect(items.length).toBe(0);
         expect(items).toEqual([]);
       });
+
       test("400: bad request - when given non number id", async () => {
         const {
           body: { message },
         } = await request(app).get(`/api/users/something/items`).expect(400);
         expect(message).toBe("bad request - invalid id");
       });
+
       test("404: not found when user id doesn't exist", async () => {
         const {
           body: { message },
@@ -239,6 +258,7 @@ describe("/api/users", () => {
         expect(message).toBe("user id not found");
       });
     });
+
     describe("POST - add a new item", () => {
       test("201: adds item to database and returns that item", async () => {
         const itemData = {
@@ -253,7 +273,6 @@ describe("/api/users", () => {
             "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
           photo_link: "https://unsplash.com/photos/a-person-using-a-laptop-computer-on-a-table-AoDMssi2UOU",
         };
-
         const {
           body: { item },
         } = await request(app).post("/api/users/1/items").send(itemData).expect(201);
@@ -268,6 +287,7 @@ describe("/api/users", () => {
         const dateListed = new Date(item.date_listed);
         expect(today.getUTCDate()).toBe(dateListed.getUTCDate());
       });
+
       test("400: request body missing keys", async () => {
         const itemData = {
           name: "Macbook Air 2020",
@@ -471,6 +491,7 @@ describe("/api/users", () => {
       });
     });
   });
+
   describe("/users/:user_id/feedback", () => {
     describe("GET - all feedback on a user profile", () => {
       test("200: responds with an array containing the feedback", async () => {
@@ -514,6 +535,7 @@ describe("/api/users", () => {
       });
     });
   });
+
   describe("/users/:user_id/items/:item_id", () => {
     describe("PATCH - update your item info", () => {
       test("200: can update item name", async () => {
