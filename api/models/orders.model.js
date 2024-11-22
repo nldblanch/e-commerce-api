@@ -1,9 +1,8 @@
 import format from "pg-format";
 import db from "../../db/connection.js";
 import { fetchUserByID } from "./users.model.js";
-import strictGreenlist from "../utils/strictGreenlist.js";
+import { greenlist, strictGreenlist } from "../utils/index.js";
 import { fetchItem } from "./items.model.js";
-import greenlist from "../utils/greenlist.js";
 
 const fetchOrder = async (id) => {
   if (!Number(id)) return Promise.reject({ code: 400, message: "bad request - invalid id" });

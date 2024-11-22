@@ -1,8 +1,4 @@
-import { fetchItem } from "../models/items.model.js";
 import { fetchOrder, fetchUserOrders, insertOrder, updateOrder } from "../models/orders.model.js";
-import { fetchUserByID } from "../models/users.model.js";
-import greenlist from "../utils/greenlist.js";
-import strictGreenlist from "../utils/strictGreenlist.js";
 
 const getOrderByID = async (request, response, next) => {
   const { order_id } = request.params;

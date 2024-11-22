@@ -1,7 +1,6 @@
 import format from "pg-format";
 import db from "../../db/connection.js";
-import strictGreenlist from "../utils/strictGreenlist.js";
-import greenlist from "../utils/greenlist.js";
+import { greenlist, strictGreenlist } from "../utils/index.js";
 
 const fetchUserByID = async (id) => {
   if (!Number(id)) return Promise.reject({ code: 400, message: "bad request - invalid id" });
