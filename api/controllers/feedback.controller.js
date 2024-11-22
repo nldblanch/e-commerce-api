@@ -1,4 +1,4 @@
-import { fetchUserFeedback, fetchFeedbackByOrderID } from "../models/feedback.model.js";
+import { fetchUserFeedback, fetchFeedbackByOrderID, insertFeedback } from "../models/feedback.model.js";
 
 const getUserFeedback = async (request, response, next) => {
   const { user_id } = request.params;
@@ -20,4 +20,15 @@ const getFeedbackByOrderID = async (request, response, next) => {
   }
 };
 
-export { getUserFeedback, getFeedbackByOrderID };
+const postFeedback = async (request, response, next) => {
+  const { order_id } = request.params;
+  const { body } = request;
+  try {
+    const feedback = await insertFeedback(order_id, body);
+    response.status(201).send({ feedback });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { getUserFeedback, getFeedbackByOrderID, postFeedback };

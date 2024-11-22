@@ -1586,5 +1586,216 @@ describe("/api/orders", () => {
         expect(message).toBe("order id not found");
       });
     });
+
+    describe("POST - feedback for an order", () => {
+      test("201: adds feedback to database and returns that item", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        expect(order).toMatchObject({ pending_order: true, pending_feedback: true });
+        const {
+          body: { order: updatedOrder },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        expect(updatedOrder).toMatchObject({ pending_order: false });
+        const feedbackData = {
+          seller_id: 2,
+          buyer_id: 1,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        const {
+          body: { feedback },
+        } = await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(201);
+        expect(feedback).toMatchObject(feedbackData);
+        expect(feedback).toMatchObject({
+          id: expect.any(Number),
+          order_id: order.id,
+          date_left: expect.any(String),
+        });
+        const today = new Date();
+        const dateLeft = new Date(feedback.date_left);
+        expect(today.getUTCDate()).toBe(dateLeft.getUTCDate());
+      });
+
+      test("201: updates order to set pending feedback to false", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        expect(order).toMatchObject({ pending_order: true, pending_feedback: true });
+        const {
+          body: { order: fulfilledOrder },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        expect(fulfilledOrder).toMatchObject({ pending_order: false, pending_feedback: true });
+        const feedbackData = {
+          seller_id: 2,
+          buyer_id: 1,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(201);
+        const {
+          body: { order: updatedOrder },
+        } = await request(app).get(`/api/orders/${order.id}`).expect(200);
+        expect(updatedOrder).toMatchObject({ pending_order: false, pending_feedback: false });
+      });
+
+      test("400: request body missing keys", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        const {
+          body: { order: updatedOrder },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        const feedbackData = {
+          buyer_id: 1,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        const {
+          body: { message },
+        } = await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(400);
+        expect(message).toBe("bad request - missing key");
+      });
+
+      test("400: request body has invalid keys", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        const {
+          body: { order: updatedOrder },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        const feedbackData = {
+          seller: 2,
+          buyer_id: 1,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        const {
+          body: { message },
+        } = await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(400);
+        expect(message).toBe("bad request - invalid key or value");
+      });
+
+      test("400: request body has invalid keys", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        const {
+          body: { order: updatedOrder },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        const feedbackData = {
+          seller: 2,
+          buyer_id: 1,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        const {
+          body: { message },
+        } = await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(400);
+        expect(message).toBe("bad request - invalid key or value");
+      });
+
+      test("400: given non number for id", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        const feedbackData = {
+          seller_id: 2,
+          buyer_id: 1,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        const {
+          body: { message },
+        } = await request(app).post(`/api/orders/error/feedback`).send(feedbackData).expect(400);
+        expect(message).toBe("bad request - invalid id");
+      });
+
+      test("404: throws error when user id does not exist", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        const {
+          body: { order: updatedOrder },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        const feedbackData = {
+          seller_id: 2,
+          buyer_id: 1,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        const {
+          body: { message },
+        } = await request(app).post(`/api/orders/${9000}/feedback`).send(feedbackData).expect(404);
+        expect(message).toBe("order id not found");
+      });
+
+      test("409: buyer id matches seller id (can't give feedback to self)", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        const {
+          body: { order: updatedOrder },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        const feedbackData = {
+          seller_id: 2,
+          buyer_id: 2,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        const {
+          body: { message },
+        } = await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(409);
+        expect(message).toBe("conflict - buyer id cannot match seller id");
+      });
+
+      test("409: feedback has already been given", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        const {
+          body: { order: updatedOrder },
+        } = await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        const feedbackData = {
+          seller_id: 2,
+          buyer_id: 1,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(201);
+
+        const {
+          body: { message },
+        } = await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(409);
+        expect(message).toBe("conflict - feedback has already been given");
+      });
+
+      test("422: cannot process feedback for a pending order", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        const feedbackData = {
+          seller_id: 1,
+          buyer_id: 2,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        const {
+          body: { message },
+        } = await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(422);
+        expect(message).toBe("unprocessable - order is pending");
+      });
+    });
   });
 });
