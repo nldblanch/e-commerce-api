@@ -3,7 +3,7 @@ import request from "supertest";
 import db from "../db/connection.js";
 import seed from "../db/seeds/seed.js";
 import app from "../api/app.js";
-import endpointsJSON from "../endpoints.js";
+import endpoints_js from "../endpoints.js";
 beforeEach(async () => {
   try {
     await seed(data);
@@ -22,7 +22,7 @@ describe("/api", () => {
       body: { endpoints },
     } = await request(app).get("/api").expect(200);
 
-    expect(endpoints).toEqual(endpointsJSON);
+    expect(endpoints).toEqual(endpoints_js);
   });
 });
 
