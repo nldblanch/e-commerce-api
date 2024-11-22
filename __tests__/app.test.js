@@ -258,6 +258,7 @@ describe("/api/users", () => {
         expect(message).toBe("user id not found");
       });
     });
+
     describe("POST - add a new item", () => {
       test("201: adds item to database and returns that item", async () => {
         const itemData = {
@@ -297,6 +298,7 @@ describe("/api/users", () => {
         } = await request(app).post("/api/users/1/items").send(itemData).expect(400);
         expect(message).toBe("bad request - missing key");
       });
+
       test("400: request body has invalid keys", async () => {
         const itemData = {
           item: "Macbook Air 2020",
@@ -315,6 +317,7 @@ describe("/api/users", () => {
         } = await request(app).post("/api/users/1/items").send(itemData).expect(400);
         expect(message).toBe("bad request - invalid key or value");
       });
+
       test("404: throws error when user id does not exist", async () => {
         const itemData = {
           name: "Macbook Air 2020",
@@ -355,6 +358,7 @@ describe("/api/users", () => {
           });
         });
       });
+
       test("200: successful response when no orders found but user exists", async () => {
         const userData = { username: "nldblanch", name: "Nathan Blanch" };
         const {
@@ -367,12 +371,14 @@ describe("/api/users", () => {
         expect(orders.length).toBe(0);
         expect(orders).toEqual([]);
       });
+
       test("400: bad request - when given non number id", async () => {
         const {
           body: { message },
         } = await request(app).get(`/api/users/something/orders`).expect(400);
         expect(message).toBe("bad request - invalid id");
       });
+
       test("404: not found when user id doesn't exist", async () => {
         const {
           body: { message },
@@ -400,6 +406,7 @@ describe("/api/users", () => {
         const date_ordered = new Date(order.date_ordered);
         expect(today.getUTCDate()).toBe(date_ordered.getUTCDate());
       });
+
       test("201: posts an item order makes that item unavailable", async () => {
         const orderData = { item_id: 1, seller_id: 1 };
         const {
@@ -424,6 +431,7 @@ describe("/api/users", () => {
           available_item: false,
         });
       });
+
       test("201: posting an item order also returns that item", async () => {
         const orderData = { item_id: 1, seller_id: 1 };
         const {
@@ -432,6 +440,7 @@ describe("/api/users", () => {
 
         expect(item).toMatchObject({ available_item: false });
       });
+
       test("concurrent orders do not allow purchase of the item", async () => {
         const orderData = { item_id: 1, seller_id: 1 };
         const {
@@ -451,6 +460,7 @@ describe("/api/users", () => {
         });
         expect(purchase2).toBe("item not available");
       });
+
       test("400: request body missing keys", async () => {
         const orderData = { item_id: 1 };
         const {
@@ -458,6 +468,7 @@ describe("/api/users", () => {
         } = await request(app).post("/api/users/2/orders").send(orderData).expect(400);
         expect(message).toBe("bad request - missing key");
       });
+
       test("400: request body has invalid keys", async () => {
         const orderData = { item_id: 1, seller: 1 };
         const {
@@ -465,6 +476,7 @@ describe("/api/users", () => {
         } = await request(app).post("/api/users/2/orders").send(orderData).expect(400);
         expect(message).toBe("bad request - invalid key or value");
       });
+
       test("404: throws error when user id does not exist", async () => {
         const orderData = { item_id: 1, seller_id: 1 };
         const {
@@ -473,6 +485,7 @@ describe("/api/users", () => {
 
         expect(message).toBe("user id not found");
       });
+
       test("404: throws error when item not available", async () => {
         const orderData = { item_id: 4, seller_id: 6 };
         const {
@@ -481,6 +494,7 @@ describe("/api/users", () => {
 
         expect(message).toBe("item not available");
       });
+
       test("409: responds with a conflict when seller associated with item does not match the seller id", async () => {
         const orderData = { item_id: 1, seller_id: 2 };
         const {
@@ -511,8 +525,8 @@ describe("/api/users", () => {
           expect(piece.rating).not.toBeGreaterThan(5);
           expect(piece.rating).not.toBeLessThan(1);
         });
-        console.log(feedback[0]);
       });
+
       test("200: successful response when no feedback found but user exists", async () => {
         const {
           body: { feedback },
@@ -520,12 +534,14 @@ describe("/api/users", () => {
         expect(feedback).toHaveLength(0);
         expect(feedback).toEqual([]);
       });
+
       test("400: bad request - when given non number id", async () => {
         const {
           body: { message },
         } = await request(app).get(`/api/users/something/feedback`).expect(400);
         expect(message).toBe("bad request - invalid id");
       });
+
       test("404: not found when user id doesn't exist", async () => {
         const {
           body: { message },
@@ -563,6 +579,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+
       test("200: can update item description", async () => {
         const {
           body: { item: macbook },
@@ -591,6 +608,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+
       test("200: can update item price", async () => {
         const {
           body: { item: macbook },
@@ -617,6 +635,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+
       test("200: can update item tag", async () => {
         const {
           body: { item: macbook },
@@ -643,6 +662,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+
       test("200: can update item photo description", async () => {
         const {
           body: { item: macbook },
@@ -669,6 +689,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+
       test("200: can update item photo source", async () => {
         const {
           body: { item: macbook },
@@ -698,6 +719,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+
       test("200: can update item photo link", async () => {
         const {
           body: { item: macbook },
@@ -726,6 +748,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+
       test("200: can update item subcategory", async () => {
         const {
           body: { item: macbook },
@@ -754,6 +777,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+
       test("200: updating item subcategory updates main category", async () => {
         const {
           body: { item: macbook },
@@ -786,6 +810,7 @@ describe("/api/users", () => {
           category_id: 1,
         });
       });
+
       test("200: can update any number of values", async () => {
         const {
           body: { item: macbook },
@@ -816,6 +841,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
+
       test("400: patch info missing keys", async () => {
         const {
           body: { item: macbook },
@@ -842,6 +868,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(400);
         expect(message).toBe("bad request - no patch data");
       });
+
       test("400: patch info has invalid keys", async () => {
         const {
           body: { item: macbook },
@@ -868,6 +895,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(400);
         expect(message).toBe("bad request - invalid key or value");
       });
+
       test("404: user id not found", async () => {
         const {
           body: { item: macbook },
@@ -894,6 +922,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/9000/items/${macbook.id}`).send(patchData).expect(404);
         expect(message).toBe("user id not found");
       });
+
       test("404: item id not found", async () => {
         const {
           body: { item: macbook },
@@ -920,6 +949,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/items/9000`).send(patchData).expect(404);
         expect(message).toBe("item id not found");
       });
+
       test("403: user id does not match item user", async () => {
         const {
           body: { item: macbook },
@@ -964,6 +994,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/orders/${order.id}`).send(patchData).expect(200);
         expect(updatedOrder).toMatchObject({ ...order, ...updatedOrder });
       });
+
       test("400: patch info missing key", async () => {
         const orderData = { item_id: 2, seller_id: 2 };
         const {
@@ -977,6 +1008,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/orders/${order.id}`).send(patchData).expect(400);
         expect(message).toBe("bad request - missing key");
       });
+
       test("400: patch info has invalid key", async () => {
         const orderData = { item_id: 2, seller_id: 2 };
         const {
@@ -990,6 +1022,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/orders/${order.id}`).send(patchData).expect(400);
         expect(message).toBe("bad request - invalid key or value");
       });
+
       test("404: user id not found", async () => {
         const orderData = { item_id: 2, seller_id: 2 };
         const {
@@ -1003,6 +1036,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/9000/orders/${order.id}`).send(patchData).expect(404);
         expect(message).toBe("user id not found");
       });
+
       test("404: order id not found", async () => {
         const orderData = { item_id: 2, seller_id: 2 };
         const {
@@ -1016,6 +1050,7 @@ describe("/api/users", () => {
         } = await request(app).patch(`/api/users/1/orders/9000`).send(patchData).expect(404);
         expect(message).toBe("order id not found");
       });
+
       test("403: user id does not match order user", async () => {
         const orderData = { item_id: 2, seller_id: 2 };
         const {
@@ -1059,6 +1094,7 @@ describe("/api/items", () => {
           });
         });
       });
+
       test("200: responds with items which are available", async () => {
         const {
           body: { items },
@@ -1069,6 +1105,7 @@ describe("/api/items", () => {
           });
         });
       });
+
       describe("queries", () => {
         describe("?category=", () => {
           test("200: clothing_and_accessories", async () => {
@@ -1085,6 +1122,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("200: beauty_and_personal_care", async () => {
             const {
               body: { categories },
@@ -1099,6 +1137,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("200: home_and_living", async () => {
             const {
               body: { categories },
@@ -1113,6 +1152,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("200: electronics_and_gadgets", async () => {
             const {
               body: { categories },
@@ -1128,6 +1168,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("200: food_and_beverages", async () => {
             const {
               body: { categories },
@@ -1142,6 +1183,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("200: toys_and_games", async () => {
             const {
               body: { categories },
@@ -1156,6 +1198,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("200: sports_and_outdoors", async () => {
             const {
               body: { categories },
@@ -1170,6 +1213,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("200: category parameter can also take number value representing id", async () => {
             const {
               body: { items },
@@ -1180,6 +1224,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("404: category doesn't exist", async () => {
             const {
               body: { message },
@@ -1187,6 +1232,7 @@ describe("/api/items", () => {
             expect(message).toBe("no items found");
           });
         });
+
         describe("?subcategory=", () => {
           test("200: can filter by subcategory", async () => {
             const {
@@ -1203,6 +1249,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("200: subcategory parameter can also take number value representing id", async () => {
             const {
               body: { items },
@@ -1213,6 +1260,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("404: subcategory doesn't exist", async () => {
             const {
               body: { message },
@@ -1220,6 +1268,7 @@ describe("/api/items", () => {
             expect(message).toBe("no items found");
           });
         });
+
         describe("?tag=", () => {
           test("200: respond with all results matching search term", async () => {
             const {
@@ -1237,6 +1286,7 @@ describe("/api/items", () => {
               });
             });
           });
+
           test("404: responds not found when tag doesn't exist", async () => {
             const {
               body: { message },
@@ -1244,6 +1294,7 @@ describe("/api/items", () => {
             expect(message).toBe("no items found");
           });
         });
+
         describe("sort_by & order", () => {
           describe("?sort_by=", () => {
             test("200: sorts by name", async () => {
@@ -1252,18 +1303,21 @@ describe("/api/items", () => {
               } = await request(app).get("/api/items?sort_by=name").expect(200);
               expect(items).toBeSortedBy("name", { ascending: true });
             });
+
             test("200: sorts by price", async () => {
               const {
                 body: { items },
               } = await request(app).get("/api/items?sort_by=price").expect(200);
               expect(items).toBeSortedBy("price", { ascending: true });
             });
+
             test("200: sorts by date_listed", async () => {
               const {
                 body: { items },
               } = await request(app).get("/api/items?sort_by=date_listed").expect(200);
               expect(items).toBeSortedBy("date_listed", { ascending: true });
             });
+
             test("400: bad request when invalid sort by parameter", async () => {
               const {
                 body: { message },
@@ -1271,6 +1325,7 @@ describe("/api/items", () => {
               expect(message).toBe("invalid query parameter");
             });
           });
+
           describe("?order=", () => {
             test("200: sorts ascending", async () => {
               const {
@@ -1278,12 +1333,14 @@ describe("/api/items", () => {
               } = await request(app).get("/api/items?order=asc").expect(200);
               expect(items).toBeSortedBy("name", { ascending: true });
             });
+
             test("200: sorts descending", async () => {
               const {
                 body: { items },
               } = await request(app).get("/api/items?order=desc").expect(200);
               expect(items).toBeSortedBy("name", { descending: true });
             });
+
             test("400: bad request when invalid order parameter", async () => {
               const {
                 body: { message },
@@ -1291,6 +1348,7 @@ describe("/api/items", () => {
               expect(message).toBe("invalid query parameter");
             });
           });
+
           describe("default", () => {
             test("200: sorts by name, order ascending", async () => {
               const {
@@ -1300,6 +1358,7 @@ describe("/api/items", () => {
             });
           });
         });
+
         describe("?price", () => {
           describe("?price_from=", () => {
             test("200: respond with results greater than the price", async () => {
@@ -1316,6 +1375,7 @@ describe("/api/items", () => {
                 expect(price).not.toBeLessThan(20000);
               });
             });
+
             test("404: responds not found when no items found", async () => {
               const {
                 body: { message },
@@ -1323,6 +1383,7 @@ describe("/api/items", () => {
               expect(message).toBe("no items found");
             });
           });
+
           describe("?price_to=", () => {
             test("200: respond with results less than the price", async () => {
               const {
@@ -1338,6 +1399,7 @@ describe("/api/items", () => {
                 expect(price).not.toBeGreaterThan(20000);
               });
             });
+
             test("404: responds not found when no items found", async () => {
               const {
                 body: { message },
@@ -1345,6 +1407,7 @@ describe("/api/items", () => {
               expect(message).toBe("no items found");
             });
           });
+
           describe("?price_from=&price_to=", () => {
             test("200: respond with results in the given price range", async () => {
               const {
@@ -1383,6 +1446,7 @@ describe("/api/items", () => {
           available_item: expect.any(Boolean),
         });
       });
+
       test("400: responds with bad request when given non number", async () => {
         const {
           body: { message },
@@ -1390,6 +1454,7 @@ describe("/api/items", () => {
 
         expect(message).toBe("bad request - invalid id");
       });
+
       test("404: responds with not found when item doesn't exist", async () => {
         const {
           body: { message },
@@ -1418,6 +1483,7 @@ describe("/api/categories", () => {
       });
     });
   });
+
   describe("/categories/:category_id", () => {
     describe("GET - all subcategories associated with a category", () => {
       test("200: responds with an array of all categories", async () => {
@@ -1433,12 +1499,14 @@ describe("/api/categories", () => {
           });
         });
       });
+
       test("400: responds with bad request when given non number", async () => {
         const {
           body: { message },
         } = await request(app).get("/api/categories/error").expect(400);
         expect(message).toBe("bad request - invalid id");
       });
+
       test("404: responds with an array of all categories", async () => {
         const {
           body: { message },
@@ -1466,6 +1534,7 @@ describe("/api/orders", () => {
           date_ordered: expect.any(String),
         });
       });
+
       test("400: responds with bad request when given non number", async () => {
         const {
           body: { message },
@@ -1473,6 +1542,7 @@ describe("/api/orders", () => {
 
         expect(message).toBe("bad request - invalid id");
       });
+
       test("404: responds with not found when order doesn't exist", async () => {
         const {
           body: { message },
