@@ -1,3 +1,3 @@
-import greenlist from "./greenlist";
-import strictGreenlist from "./strictGreenlist";
+import greenlist from "./greenlist.js";
+import strictGreenlist from "./strictGreenlist.js";
 export { greenlist, strictGreenlist };
