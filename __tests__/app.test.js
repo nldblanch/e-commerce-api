@@ -1718,6 +1718,42 @@ describe("/api/orders", () => {
         expect(message).toBe("bad request - invalid id");
       });
 
+      test("400: buyer_id does not match the id on the order", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        const feedbackData = {
+          seller_id: 2,
+          buyer_id: 3,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        const {
+          body: { message },
+        } = await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(400);
+        expect(message).toBe("bad request - buyer id does not match on order");
+      });
+
+      test("400: seller_id does not match the id on the order", async () => {
+        const orderData = { item_id: 2, seller_id: 2 };
+        const {
+          body: { order },
+        } = await request(app).post("/api/users/1/orders").send(orderData).expect(201);
+        await request(app).patch(`/api/users/1/orders/${order.id}`).send({ pending_order: false }).expect(200);
+        const feedbackData = {
+          seller_id: 3,
+          buyer_id: 1,
+          rating: 5,
+          comment: "Great communication, A-rated seller",
+        };
+        const {
+          body: { message },
+        } = await request(app).post(`/api/orders/${order.id}/feedback`).send(feedbackData).expect(400);
+        expect(message).toBe("bad request - seller id does not match on order");
+      });
+
       test("404: throws error when user id does not exist", async () => {
         const orderData = { item_id: 2, seller_id: 2 };
         const {

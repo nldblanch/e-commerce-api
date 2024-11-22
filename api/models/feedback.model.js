@@ -35,6 +35,15 @@ const insertFeedback = async (id, body) => {
     if (!order.pending_feedback) {
       return Promise.reject({ code: 409, message: "conflict - feedback has already been given" });
     }
+    if (body.seller_id === body.buyer_id) {
+      return Promise.reject({ code: 409, message: "conflict - buyer id cannot match seller id" });
+    }
+    if (order.seller_id !== body.seller_id) {
+      return Promise.reject({ code: 400, message: "bad request - seller id does not match on order" });
+    }
+    if (order.buyer_id !== body.buyer_id) {
+      return Promise.reject({ code: 400, message: "bad request - buyer id does not match on order" });
+    }
     const values = Object.values(body);
     const insertFeedbackString = format(
       `

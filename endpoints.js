@@ -208,4 +208,19 @@ export default {
       },
     },
   },
+  "/api/orders/:order_id/feedback": {
+    GET: {
+      description: "gets the feedback a user left after an order",
+      exampleResponse: {
+        feedback: "example_feedback",
+      },
+    },
+    POST: {
+      description: "allows client to give feedback for an order",
+      format: { seller_id: 2, buyer_id: 1, rating: 5, comment: "A-rated, great seller" },
+      exampleResponse: {
+        feedback: "example_feedback",
+      },
+    },
+  },
 };
