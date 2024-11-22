@@ -17,7 +17,6 @@ const getOrderByID = async (request, response, next) => {
 const getUserOrders = async (request, response, next) => {
   const { user_id } = request.params;
   try {
-    await fetchUserByID(user_id);
     const orders = await fetchUserOrders(user_id);
     response.status(200).send({ orders });
   } catch (error) {
@@ -29,17 +28,8 @@ const postOrder = async (request, response, next) => {
   const { user_id } = request.params;
   const { body } = request;
   try {
-    await strictGreenlist(["item_id", "seller_id"], Object.keys(body));
-    await fetchUserByID(user_id);
-    const item = await fetchItem(body.item_id);
-    if (item.user_id !== body.seller_id) {
-      next({ code: 409, message: "conflict - seller id does not match item seller id" });
-    } else if (!item.available_item) {
-      next({ code: 404, message: "item not available" });
-    } else {
-      const { order, updatedItem } = await insertOrder(user_id, body);
-      response.status(201).send({ order, item: updatedItem });
-    }
+    const { order, item } = await insertOrder(user_id, body);
+    response.status(201).send({ order, item });
   } catch (error) {
     next(error);
   }
@@ -49,11 +39,7 @@ const patchOrder = async (request, response, next) => {
   const { user_id, order_id } = request.params;
   const { body } = request;
   try {
-    await strictGreenlist(["pending_order"], Object.keys(body));
-    await greenlist([true, false], Object.values(body));
-    await fetchUserByID(user_id);
-
-    const order = await updateOrder(user_id, order_id, Object.values(body));
+    const order = await updateOrder(user_id, order_id, body);
     response.status(200).send({ order });
   } catch (error) {
     next(error);
