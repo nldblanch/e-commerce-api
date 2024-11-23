@@ -4,8 +4,9 @@ import { greenlist, strictGreenlist } from "../utils/index.js";
 import { fetchUserByID } from "./users.model.js";
 import { fetchCategoryFromSubcategory } from "./categories.model.js";
 
-const fetchAllItems = async ({ category, subcategory, tag, price_from, price_to, sort_by, order }) => {
+const fetchAllItems = async ({ category, subcategory, tag, price_from, price_to, sort_by, order, p = 1 }) => {
   try {
+    if (!Number(p)) return Promise.reject({ code: 400, message: "invalid page number given" });
     if (sort_by) {
       await greenlist(["name", "price", "date_listed"], [sort_by]);
     }
@@ -16,12 +17,12 @@ const fetchAllItems = async ({ category, subcategory, tag, price_from, price_to,
     const queries = [];
     let queryNum = 0;
     let queryString = `
-      SELECT items.*, categories.id AS category_id, subcategories.id AS subcategory_id 
+      SELECT items.*, category_name, subcategory_name 
       FROM items 
       LEFT JOIN categories 
       ON items.category_id = categories.id 
       LEFT JOIN subcategories
-      ON subcategories.category_id = categories.id
+      ON items.subcategory_id = subcategories.id
       WHERE available_item = TRUE `;
     if (category) {
       queryString += Number(category) ? `AND categories.id = $${++queryNum} ` : `AND category_name = $${++queryNum} `;
@@ -55,6 +56,9 @@ const fetchAllItems = async ({ category, subcategory, tag, price_from, price_to,
     } else {
       queryString += "ASC ";
     }
+    const offset = (p - 1) * 15;
+    queries.push(offset);
+    queryString += `LIMIT 15 OFFSET $${++queryNum}`;
     const { rows } = await db.query(queryString, queries);
     return rows.length > 0 ? rows : Promise.reject({ code: 404, message: "no items found" });
   } catch (error) {

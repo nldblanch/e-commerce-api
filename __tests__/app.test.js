@@ -1466,6 +1466,60 @@ describe("/api/items", () => {
           });
         });
       });
+
+      describe("pagination", () => {
+        test("200: by default, limits search results to 15", async () => {
+          const {
+            body: { items },
+          } = await request(app).get("/api/items").expect(200);
+          expect(items).toHaveLength(15);
+        });
+
+        test("200: by default, page number set to 1", async () => {
+          const {
+            body: { items },
+          } = await request(app).get("/api/items").expect(200);
+          const firstItemInSorted = data.items
+            .filter((item) => item.available_item)
+            .map((item) => {
+              return item.name;
+            })
+            .toSorted()[0];
+
+          expect(items[0]).toMatchObject({ name: firstItemInSorted });
+        });
+
+        test("200: can specify the page number", async () => {
+          const {
+            body: { items },
+          } = await request(app).get("/api/items?p=2").expect(200);
+          expect(items).toHaveLength(5);
+          const sixteenthItemInSorted = data.items
+            .filter((item) => item.available_item)
+            .map((item) => {
+              return item.name;
+            })
+            .toSorted()[16];
+
+          expect(items[0]).toMatchObject({ name: sixteenthItemInSorted });
+        });
+
+        test("400: non number given for page", async () => {
+          const {
+            body: { message },
+          } = await request(app).get("/api/items?p=error").expect(400);
+
+          expect(message).toBe("invalid page number given");
+        });
+
+        test("404: page number yields no results", async () => {
+          const {
+            body: { message },
+          } = await request(app).get("/api/items?p=100").expect(404);
+
+          expect(message).toBe("no items found");
+        });
+      });
     });
   });
 

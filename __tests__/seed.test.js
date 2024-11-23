@@ -20,6 +20,7 @@ describe("seed", () => {
       );
       expect(exists).toBe(true);
     });
+
     describe("column names", () => {
       test("id as serial primary key", async () => {
         const {
@@ -34,6 +35,7 @@ describe("seed", () => {
         expect(column.data_type).toBe("integer");
         expect(column.column_default).toBe("nextval('users_id_seq'::regclass)");
       });
+
       test("username", async () => {
         const {
           rows: [column],
@@ -48,6 +50,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("name", async () => {
         const {
           rows: [column],
@@ -62,6 +65,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("avatar_url", async () => {
         const {
           rows: [column],
@@ -78,6 +82,7 @@ describe("seed", () => {
           "'https://www.gravatar.com/avatar/3b3be63a4c2a439b013787725dfce802?d=identicon'::character varying"
         );
       });
+
       test("date_registered", async () => {
         const {
           rows: [column],
@@ -91,6 +96,7 @@ describe("seed", () => {
         expect(column.data_type).toBe("timestamp without time zone");
         expect(column.column_default).toBe("now()");
       });
+
       test("balance", async () => {
         const {
           rows: [column],
@@ -105,6 +111,7 @@ describe("seed", () => {
         expect(column.column_default).toBe("0");
       });
     });
+
     describe("properties", () => {
       test("username column is unique", async () => {
         const {
@@ -138,6 +145,7 @@ describe("seed", () => {
       );
       expect(exists).toBe(true);
     });
+
     describe("column names", () => {
       test("id as serial primary key", async () => {
         const {
@@ -152,6 +160,7 @@ describe("seed", () => {
         expect(column.data_type).toBe("integer");
         expect(column.column_default).toBe("nextval('categories_id_seq'::regclass)");
       });
+
       test("category_name", async () => {
         const {
           rows: [column],
@@ -183,6 +192,7 @@ describe("seed", () => {
       );
       expect(exists).toBe(true);
     });
+
     describe("column names", () => {
       test("id as serial primary key", async () => {
         const {
@@ -197,6 +207,7 @@ describe("seed", () => {
         expect(column.data_type).toBe("integer");
         expect(column.column_default).toBe("nextval('subcategories_id_seq'::regclass)");
       });
+
       test("category_id", async () => {
         const {
           rows: [column],
@@ -211,6 +222,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("subcategory_name", async () => {
         const {
           rows: [column],
@@ -269,6 +281,7 @@ describe("seed", () => {
       );
       expect(exists).toBe(true);
     });
+
     describe("column names", () => {
       test("id as serial primary key", async () => {
         const {
@@ -283,6 +296,7 @@ describe("seed", () => {
         expect(column.data_type).toBe("integer");
         expect(column.column_default).toBe("nextval('items_id_seq'::regclass)");
       });
+
       test("user_id", async () => {
         const {
           rows: [column],
@@ -297,6 +311,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("name", async () => {
         const {
           rows: [column],
@@ -311,6 +326,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("description", async () => {
         const {
           rows: [column],
@@ -325,6 +341,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("tag", async () => {
         const {
           rows: [column],
@@ -339,6 +356,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("category_id", async () => {
         const {
           rows: [column],
@@ -353,6 +371,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("subcategory_id", async () => {
         const {
           rows: [column],
@@ -367,6 +386,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("price", async () => {
         const {
           rows: [column],
@@ -381,6 +401,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("date_listed", async () => {
         const {
           rows: [column],
@@ -394,6 +415,7 @@ describe("seed", () => {
         expect(column.data_type).toBe("timestamp without time zone");
         expect(column.column_default).toBe("now()");
       });
+
       test("photo_description", async () => {
         const {
           rows: [column],
@@ -408,6 +430,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("YES");
       });
+
       test("photo_source", async () => {
         const {
           rows: [column],
@@ -422,6 +445,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("YES");
       });
+
       test("photo_link", async () => {
         const {
           rows: [column],
@@ -436,6 +460,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("YES");
       });
+
       test("available_item", async () => {
         const {
           rows: [column],
@@ -451,6 +476,7 @@ describe("seed", () => {
         expect(column.is_nullable).toBe("YES");
       });
     });
+
     describe("foreign keys", () => {
       test("user_id", async () => {
         const {
@@ -476,6 +502,7 @@ describe("seed", () => {
         expect(column.foreign_table_name).toBe("users");
         expect(column.foreign_column_name).toBe("oid");
       });
+
       test("category_id", async () => {
         const {
           rows: [column],
@@ -500,6 +527,7 @@ describe("seed", () => {
         expect(column.foreign_table_name).toBe("categories");
         expect(column.foreign_column_name).toBe("oid");
       });
+
       test("subcategory_id", async () => {
         const {
           rows: [column],
@@ -541,6 +569,7 @@ describe("seed", () => {
       );
       expect(exists).toBe(true);
     });
+
     describe("column names", () => {
       test("id as serial primary key", async () => {
         const {
@@ -555,6 +584,7 @@ describe("seed", () => {
         expect(column.data_type).toBe("integer");
         expect(column.column_default).toBe("nextval('orders_id_seq'::regclass)");
       });
+
       test("buyer_id", async () => {
         const {
           rows: [column],
@@ -569,6 +599,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("seller_id", async () => {
         const {
           rows: [column],
@@ -583,6 +614,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("item_id", async () => {
         const {
           rows: [column],
@@ -597,6 +629,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("pending_order", async () => {
         const {
           rows: [column],
@@ -611,6 +644,7 @@ describe("seed", () => {
         expect(column.column_default).toBe("true");
         expect(column.is_nullable).toBe("YES");
       });
+
       test("pending_feedback", async () => {
         const {
           rows: [column],
@@ -625,6 +659,7 @@ describe("seed", () => {
         expect(column.column_default).toBe("true");
         expect(column.is_nullable).toBe("YES");
       });
+
       test("date_ordered", async () => {
         const {
           rows: [column],
@@ -640,6 +675,7 @@ describe("seed", () => {
         expect(column.is_nullable).toBe("YES");
       });
     });
+
     describe("foreign keys", () => {
       test("buyer_id", async () => {
         const {
@@ -665,6 +701,7 @@ describe("seed", () => {
         expect(column.foreign_table_name).toBe("users");
         expect(column.foreign_column_name).toBe("oid");
       });
+
       test("seller_id", async () => {
         const {
           rows: [column],
@@ -689,6 +726,7 @@ describe("seed", () => {
         expect(column.foreign_table_name).toBe("users");
         expect(column.foreign_column_name).toBe("oid");
       });
+
       test("item_id", async () => {
         const {
           rows: [column],
@@ -730,6 +768,7 @@ describe("seed", () => {
       );
       expect(exists).toBe(true);
     });
+
     describe("column names", () => {
       test("id as serial primary key", async () => {
         const {
@@ -744,6 +783,7 @@ describe("seed", () => {
         expect(column.data_type).toBe("integer");
         expect(column.column_default).toBe("nextval('feedback_id_seq'::regclass)");
       });
+
       test("order_id", async () => {
         const {
           rows: [column],
@@ -758,6 +798,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("seller_id", async () => {
         const {
           rows: [column],
@@ -772,6 +813,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("buyer_id", async () => {
         const {
           rows: [column],
@@ -786,6 +828,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("rating", async () => {
         const {
           rows: [column],
@@ -800,6 +843,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("comment", async () => {
         const {
           rows: [column],
@@ -814,6 +858,7 @@ describe("seed", () => {
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("NO");
       });
+
       test("date_left", async () => {
         const {
           rows: [column],
@@ -829,6 +874,7 @@ describe("seed", () => {
         expect(column.is_nullable).toBe("YES");
       });
     });
+
     describe("foreign keys", () => {
       test("order_id", async () => {
         const {
@@ -854,6 +900,7 @@ describe("seed", () => {
         expect(column.foreign_table_name).toBe("orders");
         expect(column.foreign_column_name).toBe("oid");
       });
+
       test("buyer_id", async () => {
         const {
           rows: [column],
@@ -878,6 +925,7 @@ describe("seed", () => {
         expect(column.foreign_table_name).toBe("users");
         expect(column.foreign_column_name).toBe("oid");
       });
+
       test("seller_id", async () => {
         const {
           rows: [column],
@@ -903,6 +951,7 @@ describe("seed", () => {
         expect(column.foreign_column_name).toBe("oid");
       });
     });
+
     describe("properties", () => {
       test("seller_id !== buyer_id", async () => {
         const {
@@ -938,6 +987,7 @@ describe("seed", () => {
         expect(user).toHaveProperty("balance", expect.any(Number));
       });
     });
+
     test("categories data has been inserted correctly", async () => {
       const { rows: categories } = await db.query(`SELECT * FROM categories;`);
       expect(categories).toHaveLength(7);
@@ -946,6 +996,7 @@ describe("seed", () => {
         expect(category).toHaveProperty("category_name", expect.any(String));
       });
     });
+
     test("subcategories data has been inserted correctly", async () => {
       const { rows: subcategories } = await db.query(`SELECT * FROM subcategories;`);
       expect(subcategories).toHaveLength(29);
@@ -955,9 +1006,10 @@ describe("seed", () => {
         expect(subcategory).toHaveProperty("subcategory_name", expect.any(String));
       });
     });
+
     test("items data has been inserted correctly", async () => {
       const { rows: items } = await db.query(`SELECT * FROM items;`);
-      expect(items).toHaveLength(10);
+      expect(items).toHaveLength(21);
       items.forEach((item, i) => {
         expect(item).toHaveProperty("id", i + 1);
         expect(item).toHaveProperty("user_id", expect.any(Number));
@@ -974,6 +1026,7 @@ describe("seed", () => {
         expect(item).toHaveProperty("available_item", expect.any(Boolean));
       });
     });
+
     test("orders data has been inserted correctly", async () => {
       const { rows: orders } = await db.query(`SELECT * FROM orders;`);
       expect(orders).toHaveLength(8);
@@ -987,6 +1040,7 @@ describe("seed", () => {
         expect(order).toHaveProperty("date_ordered", expect.any(Date));
       });
     });
+
     test("feedback data has been inserted correctly", async () => {
       const { rows: feedback } = await db.query(`SELECT * FROM feedback;`);
       expect(feedback).toHaveLength(8);
