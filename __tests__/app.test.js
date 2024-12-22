@@ -741,35 +741,37 @@ describe("/api/users", () => {
         expect(item).toMatchObject({ ...macbook, ...patchData });
       });
 
-      // test("200: can update item photo source", async () => {
-      //   const {
-      //     body: { item: macbook },
-      //   } = await request(app)
-      //     .post("/api/users/1/items")
-      //     .send({
-      //       name: "Macbook Air 2020",
-      //       description: "Used, but taken well care of",
-      //       tag: "laptop",
-      //       category_id: 4,
-      //       subcategory_id: 15,
-      //       price: 50000,
-      //       photo_description: "A person using a laptop computer on a table",
-      //       photo_source: [
-      //         "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
-      //       ],
-      //     })
-      //     .expect(201);
+      test("200: can update item photo source", async () => {
+        const {
+          body: { item: macbook },
+        } = await request(app)
+          .post("/api/users/1/items")
+          .send({
+            name: "Macbook Air 2020",
+            description: "Used, but taken well care of",
+            tag: "laptop",
+            category_id: 4,
+            subcategory_id: 15,
+            price: 50000,
+            photo_description: "A person using a laptop computer on a table",
+            photo_source: [
+              "https://images.unsplash.com/photo-1719937206168-f4c829152b91?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeXxlbnwwfHx8fDE3MzE3ODQ0NDF8MA&ixlib=rb-4.0.3",
+            ],
+          })
+          .expect(201);
 
-      //   const patchData = {
-      //     photo_source:
-      //       "https://images.unsplash.com/photo-1719937050445-098888c0625e?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxtYWNib29rfGVufDB8fHx8MTczMTg1ODMwMnww&ixlib=rb-4.0.3",
-      //   };
+        const patchData = {
+          photo_source: [
+            "https://images.unsplash.com/photo-1719937050445-098888c0625e?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxtYWNib29rfGVufDB8fHx8MTczMTg1ODMwMnww&ixlib=rb-4.0.3",
+            "https://images.unsplash.com/photo-1719937050445-098888c0625e?ixid=M3w2NzYxNTl8MXwxfHNlYXJjaHwxfHxtYWNib29rfGVufDB8fHx8MTczMTg1ODMwMnww&ixlib=rb-4.0.3",
+          ],
+        };
 
-      //   const {
-      //     body: { item },
-      //   } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
-      //   expect(item).toMatchObject({ ...macbook, ...patchData });
-      // });
+        const {
+          body: { item },
+        } = await request(app).patch(`/api/users/1/items/${macbook.id}`).send(patchData).expect(200);
+        expect(item).toMatchObject({ ...macbook, ...patchData });
+      });
 
       test("200: can update item subcategory", async () => {
         const {
