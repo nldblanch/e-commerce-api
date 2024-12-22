@@ -68,9 +68,8 @@ const createTables = async () => {
       ,price INT NOT NULL
       ,date_listed TIMESTAMP DEFAULT NOW()
       ,photo_description VARCHAR
-      ,photo_source VARCHAR
-      ,photo_link VARCHAR
       ,available_item BOOLEAN DEFAULT TRUE
+      ,photo_source text ARRAY
       ,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
       ,FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE
       ,FOREIGN KEY(subcategory_id) REFERENCES subcategories(id) ON DELETE CASCADE
@@ -166,6 +165,7 @@ const insertSubcategories = async (categories, categoryIdLookup) => {
 };
 
 const insertItems = async (items, userIdLookup, categoryIdLookup, subcategoryIdLookup) => {
+  let itemPhotos = [];
   const itemsQueryData = items.map(
     ({
       username,
@@ -176,12 +176,14 @@ const insertItems = async (items, userIdLookup, categoryIdLookup, subcategoryIdL
       tag,
       price,
       date_listed,
-      photo: { description: photo_description, url, link },
+      photo_description,
+      photo_source,
       available_item,
     }) => {
       const user_id = userIdLookup[username];
       const category_id = categoryIdLookup[category];
       const subcategory_id = subcategoryIdLookup[subcategory];
+      itemPhotos.push(photo_source);
       return [
         user_id,
         name,
@@ -192,8 +194,6 @@ const insertItems = async (items, userIdLookup, categoryIdLookup, subcategoryIdL
         price,
         convertDateToTimestamp(date_listed),
         photo_description,
-        url,
-        link,
         available_item,
       ];
     }
@@ -210,16 +210,20 @@ const insertItems = async (items, userIdLookup, categoryIdLookup, subcategoryIdL
                 ,price
                 ,date_listed
                 ,photo_description
-                ,photo_source
-                ,photo_link
                 ,available_item
                 ) 
             VALUES %L
       ;`,
     itemsQueryData
   );
-
-  return db.query(insertIntoItemsQuery);
+  await db.query(insertIntoItemsQuery);
+  await Promise.all(
+    itemPhotos.map((arr, i) => {
+      const queryString = format(`UPDATE items SET photo_source = ARRAY[%L] WHERE id = $1`, arr);
+      return db.query(queryString, [i + 1]);
+    })
+  );
+  return;
 };
 
 const insertOrders = async (orders) => {

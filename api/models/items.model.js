@@ -79,29 +79,32 @@ const fetchItem = async (id) => {
 const insertItem = async (id, body) => {
   try {
     await strictGreenlist(
-      [
-        "name",
-        "description",
-        "price",
-        "tag",
-        "category_id",
-        "subcategory_id",
-        "photo_description",
-        "photo_source",
-        "photo_link",
-      ],
+      ["name", "description", "price", "tag", "category_id", "subcategory_id", "photo_description", "photo_source"],
       Object.keys(body)
     );
+
+    if (body.photo_source.length < 1) return Promise.reject({ status: 400, message: "invalid data type" });
+
     await fetchUserByID(id);
-    const values = Object.values(body);
+
+    const values = Object.values(body).filter((value) => {
+      return !Array.isArray(value);
+    });
     const insertItemString = format(
       `
-              INSERT INTO items (user_id, name, description, tag, category_id, subcategory_id, price, photo_description, photo_source, photo_link) 
+              INSERT INTO items (user_id, name, description, tag, category_id, subcategory_id, price, photo_description) 
               VALUES %L RETURNING *
               ;`,
       [[id, ...values]]
     );
-    const { rows } = await db.query(insertItemString);
+    const { rows: incompleteRows } = await db.query(insertItemString);
+    const [incompleteData] = incompleteRows;
+    const { id: item_id } = incompleteData;
+
+    const insertPhotoString = format(`UPDATE items SET photo_source = ARRAY[%L] WHERE id = $1 RETURNING *`, [
+      body.photo_source,
+    ]);
+    const { rows } = await db.query(insertPhotoString, [item_id]);
     const [data] = rows;
     return data;
   } catch (error) {
@@ -112,17 +115,7 @@ const insertItem = async (id, body) => {
 const updateItem = async (user_id, item_id, body) => {
   try {
     await greenlist(
-      [
-        "name",
-        "description",
-        "price",
-        "tag",
-        "category_id",
-        "subcategory_id",
-        "photo_description",
-        "photo_source",
-        "photo_link",
-      ],
+      ["name", "description", "price", "tag", "category_id", "subcategory_id", "photo_description", "photo_source"],
       Object.keys(body)
     );
     await fetchUserByID(user_id);

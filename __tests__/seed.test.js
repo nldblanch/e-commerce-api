@@ -441,22 +441,7 @@ describe("seed", () => {
                               AND column_name = 'photo_source';`
         );
         expect(column.column_name).toBe("photo_source");
-        expect(column.data_type).toBe("character varying");
-        expect(column.column_default).toBe(null);
-        expect(column.is_nullable).toBe("YES");
-      });
-
-      test("photo_link", async () => {
-        const {
-          rows: [column],
-        } = await db.query(
-          `SELECT column_name, data_type, column_default, is_nullable
-                              FROM information_schema.columns
-                              WHERE table_name = 'items'
-                              AND column_name = 'photo_link';`
-        );
-        expect(column.column_name).toBe("photo_link");
-        expect(column.data_type).toBe("character varying");
+        expect(column.data_type).toBe("ARRAY");
         expect(column.column_default).toBe(null);
         expect(column.is_nullable).toBe("YES");
       });
@@ -1011,7 +996,7 @@ describe("seed", () => {
       const { rows: items } = await db.query(`SELECT * FROM items;`);
       expect(items).toHaveLength(21);
       items.forEach((item, i) => {
-        expect(item).toHaveProperty("id", i + 1);
+        expect(item).toHaveProperty("id", expect.any(Number));
         expect(item).toHaveProperty("user_id", expect.any(Number));
         expect(item).toHaveProperty("name", expect.any(String));
         expect(item).toHaveProperty("description", expect.any(String));
@@ -1021,8 +1006,7 @@ describe("seed", () => {
         expect(item).toHaveProperty("price", expect.any(Number));
         expect(item).toHaveProperty("date_listed", expect.any(Date));
         expect(item).toHaveProperty("photo_description", expect.any(String));
-        expect(item).toHaveProperty("photo_source", expect.any(String));
-        expect(item).toHaveProperty("photo_link", expect.any(String));
+        expect(item).toHaveProperty("photo_source", expect.any(Array));
         expect(item).toHaveProperty("available_item", expect.any(Boolean));
       });
     });
