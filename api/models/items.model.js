@@ -60,13 +60,33 @@ const fetchAllItems = async ({ category, subcategory, tag, price_from, price_to,
     queries.push(offset);
     queryString += `LIMIT 15 OFFSET $${++queryNum}`;
     const { rows } = await db.query(queryString, queries);
-    return rows.length > 0 ? rows : Promise.reject({ code: 404, message: "no items found" });
+    if (rows.length > 0) {
+      return rows;
+    } else {
+      const subcategory = await getRelevantSubcategory(tag);
+      return Promise.reject({
+        code: 404,
+        message: "no items found",
+        information: subcategory,
+      });
+    }
   } catch (error) {
     if (error.message === "bad request - invalid key or value") {
       error.message = "invalid query parameter";
     }
     return Promise.reject(error);
   }
+};
+
+const getRelevantSubcategory = async (tag = "") => {
+  let queryString = `
+      SELECT subcategory_name 
+      FROM items  
+      LEFT JOIN subcategories
+      ON items.subcategory_id = subcategories.id
+      WHERE available_item = FALSE AND tag LIKE $1`;
+  const { rows } = await db.query(queryString, [`%${tag}%`]);
+  return rows[0];
 };
 
 const fetchItem = async (id) => {

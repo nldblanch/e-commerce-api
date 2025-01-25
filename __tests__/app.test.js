@@ -1320,6 +1320,20 @@ describe("/api/items", () => {
             } = await request(app).get("/api/items?tag=nathan").expect(404);
             expect(message).toBe("no items found");
           });
+
+          test("404: attempts to return a subcategory related to search results using unavailable items in db", async () => {
+            const {
+              body: { information },
+            } = await request(app).get("/api/items?tag=art").expect(404);
+            expect(information).toMatchObject({ subcategory_name: "educational_toys" });
+          });
+
+          test("404: no information provided when tag matches no items", async () => {
+            const {
+              body: { information },
+            } = await request(app).get("/api/items?tag=nathan").expect(404);
+            expect(information).toBeUndefined();
+          });
         });
 
         describe("sort_by & order", () => {
